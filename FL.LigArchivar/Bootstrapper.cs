@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
-using Setup.WPF.ViewModels;
+using FL.LigArchivar.ViewModels;
 
 namespace FL.LigArchivar
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Setup.WPF.Views
+﻿namespace FL.LigArchivar.Views
 {
     public partial class ShellView
     {

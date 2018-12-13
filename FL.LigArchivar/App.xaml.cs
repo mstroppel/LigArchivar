@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows;
-
-namespace Setup.WPF
+﻿namespace FL.LigArchivar
 {
     public partial class App
     {
