@@ -1,0 +1,7 @@
+<Project>
+  <!-- Include FxCop and StyleCop for all projects. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.2" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2" />
+  </ItemGroup>
+</Project>
