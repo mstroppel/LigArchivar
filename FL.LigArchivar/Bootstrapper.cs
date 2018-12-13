@@ -40,13 +40,15 @@ namespace FL.LigArchivar
         /// <inheritdoc/>
         protected override object GetInstance(Type service, string key)
         {
-            return container.GetInstance(service, key);
+            var instance = container.GetInstance(service, key);
+            return instance;
         }
 
         /// <inheritdoc/>
         protected override IEnumerable<object> GetAllInstances(Type service)
         {
-            return container.GetAllInstances(service);
+            var instances = container.GetAllInstances(service);
+            return instances;
         }
 
         /// <inheritdoc/>
