@@ -1,7 +1,6 @@
-﻿using System;
-using Caliburn.Micro;
+﻿using Caliburn.Micro;
 
-namespace Setup.WPF.ViewModels
+namespace FL.LigArchivar.ViewModels
 {
     public class ShellViewModel : Screen
     {
