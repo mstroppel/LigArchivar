@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
+using FL.LigArchivar.GUI.Utilities;
 using FL.LigArchivar.ViewModels;
 
 namespace FL.LigArchivar
@@ -18,6 +19,7 @@ namespace FL.LigArchivar
         /// </summary>
         public Bootstrapper()
         {
+            LogManager.GetLog = type => new Log4NetLogger(type);
             Initialize();
         }
 
