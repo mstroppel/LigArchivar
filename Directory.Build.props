@@ -14,5 +14,7 @@
 
     <UICulture>de-DE</UICulture>
 
+    <NoWarn>$(NoWarn);1591</NoWarn>
+
   </PropertyGroup> 
 </Project>

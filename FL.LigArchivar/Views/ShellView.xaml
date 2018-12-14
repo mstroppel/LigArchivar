@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:FL.LigArchivar.ViewModels.Data"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FL.LigArchivar.ViewModels"
     Title="ShellView"
@@ -20,7 +21,8 @@
             <RowDefinition Height="35" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100*" />
+            <ColumnDefinition Width="80*" />
+            <ColumnDefinition Width="80*" />
             <ColumnDefinition Width="40*" />
             <ColumnDefinition Width="40*" />
         </Grid.ColumnDefinitions>
@@ -39,12 +41,25 @@
             Margin="5"
             Click="BrowseRootDirectory_Click"
             Content="_Durchsuchen..." />
+        <!--  folder tree  -->
+        <TreeView
+            x:Name="Root"
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItem}" ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
         <!--  information  -->
         <DataGrid
             x:Name="RenameFiles"
             Grid.Row="1"
             Grid.RowSpan="4"
-            Grid.Column="0"
+            Grid.Column="1"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             AutoGenerateColumns="False">
@@ -56,7 +71,7 @@
         <!--  Prefix  -->
         <TextBlock
             Grid.Row="1"
-            Grid.Column="1"
+            Grid.Column="2"
             Margin="5"
             Text="Prefix:" />
         <TextBox
@@ -67,7 +82,7 @@
         <!--  Sorting  -->
         <GroupBox
             Grid.Row="2"
-            Grid.Column="1"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             VerticalAlignment="Top"
             Header="Sortierung">
@@ -94,7 +109,7 @@
         <CheckBox
             x:Name="RenameNoneJpeg"
             Grid.Row="3"
-            Grid.Column="1"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             Margin="5"
             Content="Dateiengruppe ohne _JPEG umbenennen" />
@@ -102,7 +117,7 @@
         <Button
             x:Name="Rename"
             Grid.Row="4"
-            Grid.Column="1"
+            Grid.Column="2"
             Grid.ColumnSpan="2"
             Margin="5"
             Content="Umbenennen" />
