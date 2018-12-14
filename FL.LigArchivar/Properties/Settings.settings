@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FL.LigArchivar.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DefaultSettingsFilePath" Type="System.String" Scope="User">
+    <Setting Name="RootDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\sepp\archiv\Einstellungen\LigArchivarEinstellungen.xml</Value>
     </Setting>
   </Settings>
