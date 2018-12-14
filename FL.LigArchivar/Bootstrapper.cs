@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
-using FL.LigArchivar.GUI.Utilities;
+using FL.LigArchivar.Core.Data;
+using FL.LigArchivar.Utilities;
 using FL.LigArchivar.ViewModels;
+using FL.LigArchivar.Views;
 
 namespace FL.LigArchivar
 {
@@ -36,6 +38,31 @@ namespace FL.LigArchivar
         /// <inheritdoc/>
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
+            // We want to show a dialog first.
+            Application.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+            var openSettings = new OpenSettings();
+            openSettings.SettingsFilePath = Properties.Settings.Default.DefaultSettingsFilePath;
+            openSettings.ShowDialog();
+
+            if (openSettings.Settings == null)
+            {
+                // Explicit shutdown the application when no settings are loaded.
+                Application.Shutdown();
+                return;
+            }
+
+            // Register our settings.
+            container.RegisterInstance(typeof(AppSettings), null, openSettings.Settings);
+
+            // Save the new file path of the settings.
+            Properties.Settings.Default.DefaultSettingsFilePath = openSettings.SettingsFilePath;
+            Properties.Settings.Default.Save();
+
+            // Now close when the last window closes.
+            Application.ShutdownMode = System.Windows.ShutdownMode.OnLastWindowClose;
+
+            // Show the main shell.
             DisplayRootViewFor<ShellViewModel>();
         }
 

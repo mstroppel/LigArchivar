@@ -23,12 +23,15 @@ namespace FL.LigArchivar.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("\\\\sepp\\archiv\\Einstellungen\\LigArchivarEinstellungen.xml")]
         public string DefaultSettingsFilePath {
             get {
                 return ((string)(this["DefaultSettingsFilePath"]));
+            }
+            set {
+                this["DefaultSettingsFilePath"] = value;
             }
         }
     }
