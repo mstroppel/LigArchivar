@@ -2,7 +2,7 @@
 using System.Globalization;
 using Caliburn.Micro;
 
-namespace FL.LigArchivar.GUI.Utilities
+namespace FL.LigArchivar.Utilities
 {
     /// <summary>
     /// <see cref="ILog"/> implementation with <see cref="log4net"/>.
