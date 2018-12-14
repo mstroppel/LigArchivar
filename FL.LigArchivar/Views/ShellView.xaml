@@ -37,6 +37,7 @@
             Grid.Row="0"
             Grid.Column="2"
             Margin="5"
+            Click="BrowseRootDirectory_Click"
             Content="_Durchsuchen..." />
         <!--  information  -->
         <DataGrid
