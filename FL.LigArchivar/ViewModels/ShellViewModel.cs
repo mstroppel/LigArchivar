@@ -1,33 +1,22 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using FL.LigArchivar.Core.Utilities;
+using FL.LigArchivar.Core;
+using FL.LigArchivar.ViewModels.Data;
 
 namespace FL.LigArchivar.ViewModels
 {
-    /// <summary>
-    /// View model for the main shell.
-    /// </summary>
-    /// <seealso cref="Screen" />
     public class ShellViewModel : Screen
     {
         private static readonly ILog Log = LogManager.GetLog(typeof(ShellViewModel));
         private string _currentRootDirectorySearched;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ShellViewModel"/> class.
-        /// </summary>
         public ShellViewModel()
         {
             RootDirectory = Properties.Settings.Default.RootDirectory;
         }
 
-        /// <summary>
-        /// Gets or sets the root directory.
-        /// </summary>
-        /// <value>
-        /// The root directory.
-        /// </value>
         public string RootDirectory
         {
             get { return _rootDirectory; }
@@ -44,19 +33,39 @@ namespace FL.LigArchivar.ViewModels
 
         private string _rootDirectory;
 
-        /// <summary>
-        /// Called when <see cref="RootDirectory"/> has changed.
-        /// </summary>
-        /// <param name="newPath">The new path.</param>
+        public IImmutableList<ITreeViewItem> Root
+        {
+            get
+            {
+                return _root;
+            }
+
+            private set
+            {
+                _root = value;
+                NotifyOfPropertyChange(nameof(Root));
+            }
+        }
+
+        private IImmutableList<ITreeViewItem> _root;
+
+        private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
+        {
+            if (ArchiveRoot.TryCreate(rootDirectoryPath, out var root))
+                return root;
+
+            return null;
+        }
+
         private async void OnRootDirectoryChanged(string newPath)
         {
             try
             {
                 _currentRootDirectorySearched = newPath;
 
-                var exists = await Task.Run(() => DirectoryEx.Exists(newPath)).ConfigureAwait(false);
+                var root = await Task.Run(() => GetArchiveRoot(newPath)).ConfigureAwait(false);
 
-                if (!exists)
+                if (root == null)
                     return;
 
                 // If another check was started, this one is no longer valid.
@@ -65,6 +74,9 @@ namespace FL.LigArchivar.ViewModels
 
                 Log.Info("New directory " + newPath + " exists!");
                 SaveRootDirectory();
+
+                var rootItem = new ArchiveRootTreeViewItem(root);
+                Root = rootItem.Children;
             }
             catch (Exception ex)
             {
@@ -73,9 +85,6 @@ namespace FL.LigArchivar.ViewModels
             }
         }
 
-        /// <summary>
-        /// Saves the currently selected root directory to the user settings of the application.
-        /// </summary>
         private void SaveRootDirectory()
         {
             // Save the new file path of the settings.
