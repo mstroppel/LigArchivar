@@ -1,4 +1,6 @@
-﻿namespace FL.LigArchivar.Views
+﻿using WPFFolderBrowser;
+
+namespace FL.LigArchivar.Views
 {
     /// <summary>
     /// Interaction logic of <see cref="ShellView"/>.
@@ -13,6 +15,25 @@
         public ShellView()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Handles the Click event of the BrowseRootDirectory control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
+        private void BrowseRootDirectory_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var dialog = new WPFFolderBrowserDialog();
+            dialog.InitialDirectory = RootDirectory.Text;
+
+            var result = dialog.ShowDialog();
+            if (result == false)
+            {
+                return;
+            }
+
+            RootDirectory.Text = dialog.FileName;
         }
     }
 }

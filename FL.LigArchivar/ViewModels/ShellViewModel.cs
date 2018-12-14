@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using Caliburn.Micro;
 
 namespace FL.LigArchivar.ViewModels
 {
@@ -27,11 +28,24 @@ namespace FL.LigArchivar.ViewModels
             get { return _rootDirectory; }
             set
             {
-                _rootDirectory = value;
-                NotifyOfPropertyChange(nameof(RootDirectory));
+                if (_rootDirectory != value)
+                {
+                    _rootDirectory = value;
+                    NotifyOfPropertyChange(nameof(RootDirectory));
+                }
             }
         }
 
         private string _rootDirectory;
+
+        /// <summary>
+        /// Saves the currently selected root directory to the user settings of the application.
+        /// </summary>
+        private void SaveRootDirectory()
+        {
+            // Save the new file path of the settings.
+            Properties.Settings.Default.RootDirectory = _rootDirectory;
+            Properties.Settings.Default.Save();
+        }
     }
 }
