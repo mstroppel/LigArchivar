@@ -1,18 +1,14 @@
-﻿using System.Collections.Immutable;
+﻿using System.IO;
 
 namespace FL.LigArchivar.Core.Data
 {
-    public class InvalidFileSystemItem : IFileSystemItem
+    public class InvalidFileSystemItem : FileSystemItemBase
     {
-        public InvalidFileSystemItem(string name)
+        private const string InvalidPrefix = "<invalid>";
+
+        public InvalidFileSystemItem(DirectoryInfo directory)
+            : base(directory, InvalidPrefix + directory.Name, false)
         {
-            Name = "<invalid>" + name;
         }
-
-        public string Name { get; }
-
-        public bool Valid => false;
-
-        public IImmutableList<IFileSystemItem> Children => ImmutableList<IFileSystemItem>.Empty;
     }
 }

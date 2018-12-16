@@ -15,7 +15,7 @@ namespace FL.LigArchivar.Core
         {
             _directoryPath = archiveRootDirectoryPath;
             _directoryInfo = new DirectoryInfo(archiveRootDirectoryPath);
-            Children = GetChildren(_directoryInfo);
+            Children = _directoryInfo.GetChildrenFileSystemItems(AssetDirectory.TryCreate);
         }
 
         public static bool TryCreate(string archiveRootDirectoryPath, out ArchiveRoot archivar)
@@ -30,27 +30,5 @@ namespace FL.LigArchivar.Core
         }
 
         public IImmutableList<IFileSystemItem> Children { get; }
-
-        private static IImmutableList<IFileSystemItem> GetChildren(DirectoryInfo directory)
-        {
-            var items = new List<IFileSystemItem>();
-
-            var subDirectories = directory.GetDirectories();
-            foreach (var subDirectory in subDirectories)
-            {
-                AssetDirectory asset;
-                if (AssetDirectory.TryCreate(subDirectory, out asset))
-                {
-                    items.Add(asset);
-                }
-                else
-                {
-                    var invalidItem = new InvalidFileSystemItem(subDirectory.Name);
-                    items.Add(invalidItem);
-                }
-            }
-
-            return items.ToImmutableList();
-        }
     }
 }

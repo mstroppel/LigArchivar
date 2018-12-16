@@ -3,23 +3,14 @@ using System.IO;
 
 namespace FL.LigArchivar.Core.Data
 {
-    public class YearDirectory : IFileSystemItem
+    public class YearDirectory : FileSystemItemBase
     {
-        private DirectoryInfo _yearDirectory;
-
         private YearDirectory(DirectoryInfo yearDirectory)
+            : base(yearDirectory, yearDirectory.Name, true, null)
         {
-            _yearDirectory = yearDirectory;
-            Name = _yearDirectory.Name;
         }
 
-        public string Name { get; }
-
-        public bool Valid => true;
-
-        public IImmutableList<IFileSystemItem> Children => ImmutableList<IFileSystemItem>.Empty;
-
-        public static bool TryCreate(DirectoryInfo yearDirectory, out YearDirectory directory)
+        public static bool TryCreate(DirectoryInfo yearDirectory, out IFileSystemItem directory)
         {
             directory = null;
             var name = yearDirectory.Name;
