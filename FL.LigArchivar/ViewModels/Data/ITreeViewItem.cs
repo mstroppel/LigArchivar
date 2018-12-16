@@ -8,6 +8,8 @@ namespace FL.LigArchivar.ViewModels.Data
 
         string FullPath { get; }
 
+        bool IsValid { get; }
+
         IImmutableList<ITreeViewItem> Children { get; }
     }
 }

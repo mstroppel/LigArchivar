@@ -6,10 +6,11 @@ namespace FL.LigArchivar.ViewModels.Data
     {
         private ITreeViewItem _parent;
 
-        protected TreeViewItemBase(string name, ITreeViewItem parent = null)
+        protected TreeViewItemBase(string name, ITreeViewItem parent = null, bool isValid = true)
         {
             Name = name;
             _parent = parent;
+            IsValid = isValid;
         }
 
         public string Name { get; }
@@ -26,5 +27,7 @@ namespace FL.LigArchivar.ViewModels.Data
         }
 
         public abstract IImmutableList<ITreeViewItem> Children { get; }
+
+        public bool IsValid { get; }
     }
 }
