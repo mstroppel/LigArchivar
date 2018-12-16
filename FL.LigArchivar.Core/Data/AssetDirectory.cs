@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using Caliburn.Micro;
@@ -16,10 +17,11 @@ namespace FL.LigArchivar.Core.Data
         }.ToImmutableList();
         private readonly DirectoryInfo _assetDirectory;
 
-        public AssetDirectory(DirectoryInfo assetDirectory)
+        private AssetDirectory(DirectoryInfo assetDirectory)
         {
             _assetDirectory = assetDirectory;
             Name = assetDirectory.Name;
+            Children = GetChildren(assetDirectory);
         }
 
         public static bool TryCreate(DirectoryInfo assetDirectory, out AssetDirectory directory)
@@ -40,6 +42,32 @@ namespace FL.LigArchivar.Core.Data
 
         public string Name { get; }
 
+        public bool HasChildren { get; }
+
+        public IImmutableList<IFileSystemItem> Children { get; }
+
         public bool Valid => true;
+
+        private static IImmutableList<IFileSystemItem> GetChildren(DirectoryInfo directory)
+        {
+            var items = new List<IFileSystemItem>();
+
+            var subDirectories = directory.GetDirectories();
+            foreach (var subDirectory in subDirectories)
+            {
+                var isYearDirectory = YearDirectory.TryCreate(subDirectory, out var year);
+                if (isYearDirectory)
+                {
+                    items.Add(year);
+                }
+                else
+                {
+                    var invalidItem = new InvalidFileSystemItem(subDirectory.Name);
+                    items.Add(invalidItem);
+                }
+            }
+
+            return items.ToImmutableList();
+        }
     }
 }
