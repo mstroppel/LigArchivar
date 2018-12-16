@@ -6,7 +6,7 @@ namespace FL.LigArchivar.Core.Data
     {
         string Name { get; }
 
-        bool Valid { get; }
+        bool IsValid { get; }
 
         IImmutableList<IFileSystemItem> Children { get; }
     }

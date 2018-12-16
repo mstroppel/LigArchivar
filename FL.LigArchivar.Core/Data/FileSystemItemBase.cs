@@ -8,11 +8,11 @@ namespace FL.LigArchivar.Core.Data
 {
     public abstract class FileSystemItemBase : IFileSystemItem
     {
-        public FileSystemItemBase(DirectoryInfo directory, string name, bool valid, TryCreateFileSystemItem tryCreateChild = null)
+        public FileSystemItemBase(DirectoryInfo directory, string name, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
         {
             Directory = directory;
             Name = name;
-            Valid = valid;
+            IsValid = isValid;
             if (tryCreateChild != null)
             {
                 Children = directory.GetChildrenFileSystemItems(tryCreateChild);
@@ -27,7 +27,7 @@ namespace FL.LigArchivar.Core.Data
 
         public string Name { get; }
 
-        public bool Valid { get; }
+        public bool IsValid { get; }
 
         public IImmutableList<IFileSystemItem> Children { get; }
     }

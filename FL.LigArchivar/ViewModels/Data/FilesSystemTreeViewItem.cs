@@ -9,7 +9,7 @@ namespace FL.LigArchivar.ViewModels.Data
         private readonly IFileSystemItem _inner;
 
         public FilesSystemTreeViewItem(IFileSystemItem inner, ITreeViewItem parent = null)
-            : base(inner.Name, parent)
+            : base(inner.Name, parent, inner.IsValid)
         {
             _inner = inner;
             Children = inner.Children
