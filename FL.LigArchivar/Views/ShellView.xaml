@@ -45,8 +45,8 @@
         <TreeView
             x:Name="Root"
             Grid.Row="1"
-            Grid.Column="0"
             Grid.RowSpan="4"
+            Grid.Column="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
             <TreeView.ItemTemplate>
