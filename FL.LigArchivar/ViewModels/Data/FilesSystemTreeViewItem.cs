@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
@@ -11,7 +12,9 @@ namespace FL.LigArchivar.ViewModels.Data
             : base(inner.Name, parent)
         {
             _inner = inner;
-            Children = ImmutableList<ITreeViewItem>.Empty;
+            Children = inner.Children
+                .Select(item => item.ToTreeViewItem(this))
+                .ToImmutableList();
         }
 
         public override IImmutableList<ITreeViewItem> Children { get; }
