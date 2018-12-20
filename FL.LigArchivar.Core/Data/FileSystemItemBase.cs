@@ -19,7 +19,7 @@ namespace FL.LigArchivar.Core.Data
 
             if (tryCreateChild != null)
             {
-                Children = directory.GetChildrenFileSystemItems(parent, tryCreateChild);
+                Children = directory.GetChildrenFileSystemItems(this, tryCreateChild);
             }
             else
             {

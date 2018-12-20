@@ -12,14 +12,14 @@ namespace FL.LigArchivar.Core.Tests.Data
         public void SetUp()
         {
             FileSystemProvider.Instance = FileSystemForTesting.Instance;
-            var created = ArchiveRoot.TryCreate(@"\\sepp\archiv", out _root);
+            var created = ArchiveRoot.TryCreate(@"C:\archiv", out _root);
             Assert.IsTrue(created);
         }
 
         [Test]
         public void GetYear()
         {
-            var child = _root.GetChild(@"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung");
+            var child = _root.GetChild(@"Digitalfoto\2018\A-Albverein");
 
             var actualYear = child.GetYear();
 
