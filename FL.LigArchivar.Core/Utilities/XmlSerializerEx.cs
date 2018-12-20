@@ -34,7 +34,8 @@ namespace FL.LigArchivar.Core.Utilities
             try
             {
                 // Try to open existing file with default deserialization.
-                using (StreamReader sr = new StreamReader(filePath, Encoding.UTF8, true))
+                using (Stream stream = FileSystemProvider.Instance.FileStream.Create(filePath, FileMode.Open))
+                using (StreamReader sr = new StreamReader(stream, Encoding.UTF8, true))
                 {
                     var serializer = new XmlSerializer(typeof(T));
                     readObject = serializer.Deserialize(sr) as T;
@@ -57,7 +58,8 @@ namespace FL.LigArchivar.Core.Utilities
             // Try to open existing file with tolerant deserialization.
             try
             {
-                using (StreamReader sr = new StreamReader(filePath, Encoding.UTF8, true))
+                using (Stream stream = FileSystemProvider.Instance.FileStream.Create(filePath, FileMode.Open))
+                using (StreamReader sr = new StreamReader(stream, Encoding.UTF8, true))
                 {
                     var serializer = new XmlSerializer(typeof(T));
                     return serializer.Deserialize(sr) as T;
@@ -87,6 +89,7 @@ namespace FL.LigArchivar.Core.Utilities
         {
             try
             {
+                using (Stream stream = FileSystemProvider.Instance.FileStream.Create(filePath, FileMode.Create))
                 using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
                 {
                     var serializer = new XmlSerializer(data.GetType());

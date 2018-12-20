@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.IO.Abstractions;
 
 namespace FL.LigArchivar.Core.Data
 {
@@ -6,7 +6,7 @@ namespace FL.LigArchivar.Core.Data
     {
         private const string IgnoredPrefix = "<ignored>";
 
-        public IgnoredFileSystemItem(DirectoryInfo directory, IFileSystemItem parent)
+        public IgnoredFileSystemItem(DirectoryInfoBase directory, IFileSystemItem parent)
             : base(directory, IgnoredPrefix + directory.Name, parent, true)
         {
         }

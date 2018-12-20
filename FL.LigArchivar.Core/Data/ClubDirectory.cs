@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
-using System.IO;
+
+using System.IO.Abstractions;
 using System.Linq;
 using FL.LigArchivar.Core.Utilities;
 
@@ -27,12 +28,12 @@ namespace FL.LigArchivar.Core.Data
             @"Z-Kegler"
         }.ToImmutableList();
 
-        private ClubDirectory(DirectoryInfo assetDirectory, IFileSystemItem parent)
+        private ClubDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
             : base(assetDirectory, assetDirectory.Name, parent, true)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfoBase assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
-using System.IO;
+
+using System.IO.Abstractions;
 using System.Linq;
 using FL.LigArchivar.Core.Utilities;
 
@@ -16,12 +17,12 @@ namespace FL.LigArchivar.Core.Data
             @"Video"
         }.ToImmutableList();
 
-        private AssetDirectory(DirectoryInfo assetDirectory, IFileSystemItem parent)
+        private AssetDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
             : base(assetDirectory, assetDirectory.Name, parent, true, TryCreateChild)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfoBase assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 
@@ -37,7 +38,7 @@ namespace FL.LigArchivar.Core.Data
             return true;
         }
 
-        private static bool TryCreateChild(DirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem fileSystemItem)
+        private static bool TryCreateChild(DirectoryInfoBase directory, IFileSystemItem parent, out IFileSystemItem fileSystemItem)
         {
             var isYear = YearDirectory.TryCreate(directory, parent, out fileSystemItem);
             if (isYear)

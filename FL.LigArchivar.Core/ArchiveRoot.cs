@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
+﻿using System.Collections.Immutable;
+
+using System.IO.Abstractions;
 using FL.LigArchivar.Core.Data;
 using FL.LigArchivar.Core.Utilities;
 
@@ -9,12 +9,12 @@ namespace FL.LigArchivar.Core
     public class ArchiveRoot
     {
         private readonly string _directoryPath;
-        private readonly DirectoryInfo _directoryInfo;
+        private readonly DirectoryInfoBase _directoryInfo;
 
         private ArchiveRoot(string archiveRootDirectoryPath)
         {
             _directoryPath = archiveRootDirectoryPath;
-            _directoryInfo = new DirectoryInfo(archiveRootDirectoryPath);
+            _directoryInfo = FileSystemProvider.Instance.DirectoryInfo.FromDirectoryName(archiveRootDirectoryPath);
             Children = _directoryInfo.GetChildrenFileSystemItems(null, AssetDirectory.TryCreate);
         }
 

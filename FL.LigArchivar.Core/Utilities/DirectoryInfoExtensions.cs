@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
+
+using System.IO.Abstractions;
 using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.Core.Utilities
 {
-    public delegate bool TryCreateFileSystemItem(DirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem item);
+    public delegate bool TryCreateFileSystemItem(DirectoryInfoBase directory, IFileSystemItem parent, out IFileSystemItem item);
 
     public static class DirectoryInfoExtensions
     {
-        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this DirectoryInfo self, IFileSystemItem parent, TryCreateFileSystemItem tryCreateChild)
+        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this DirectoryInfoBase self, IFileSystemItem parent, TryCreateFileSystemItem tryCreateChild)
         {
             var items = new List<IFileSystemItem>();
 
