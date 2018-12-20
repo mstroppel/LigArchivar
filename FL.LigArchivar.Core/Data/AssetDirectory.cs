@@ -7,6 +7,8 @@ namespace FL.LigArchivar.Core.Data
 {
     public class AssetDirectory : FileSystemItemBase
     {
+        private const string _folderStructureFolderName = @"Ordnerstruktur";
+
         private static readonly IImmutableList<string> _allowedNames = new[]
         {
             @"Digitalfoto",
@@ -15,7 +17,7 @@ namespace FL.LigArchivar.Core.Data
         }.ToImmutableList();
 
         private AssetDirectory(DirectoryInfo assetDirectory)
-            : base(assetDirectory, assetDirectory.Name, true, YearDirectory.TryCreate)
+            : base(assetDirectory, assetDirectory.Name, true, TryCreateChild)
         {
         }
 
@@ -28,11 +30,26 @@ namespace FL.LigArchivar.Core.Data
 
             var name = assetDirectory.Name;
 
-            if (!_allowedNames.Any(item => item == name))
+            if (_allowedNames.All(item => item != name))
                 return false;
 
             directory = new AssetDirectory(assetDirectory);
             return true;
+        }
+
+        private static bool TryCreateChild(DirectoryInfo directory, out IFileSystemItem fileSystemItem)
+        {
+            var isYear = YearDirectory.TryCreate(directory, out fileSystemItem);
+            if (isYear)
+                return true;
+
+            if (directory.Name == _folderStructureFolderName)
+            {
+                fileSystemItem = new IgnoredFileSystemItem(directory);
+                return true;
+            }
+
+            return false;
         }
     }
 }
