@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
-using System.IO;
+
+using System.IO.Abstractions;
 using System.Linq;
 using FL.LigArchivar.Core.Utilities;
 
@@ -9,7 +10,7 @@ namespace FL.LigArchivar.Core.Data
     {
         private readonly bool _itemItselfIsValid;
 
-        public FileSystemItemBase(DirectoryInfo directory, string name, IFileSystemItem parent, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
+        public FileSystemItemBase(DirectoryInfoBase directory, string name, IFileSystemItem parent, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
         {
             Directory = directory;
             Name = name;
@@ -28,7 +29,7 @@ namespace FL.LigArchivar.Core.Data
             UpdateIsValid();
         }
 
-        public DirectoryInfo Directory { get; }
+        public DirectoryInfoBase Directory { get; }
 
         public string Name { get; }
 

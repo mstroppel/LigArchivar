@@ -1,16 +1,15 @@
-﻿using System.Collections.Immutable;
-using System.IO;
+﻿using System.IO.Abstractions;
 
 namespace FL.LigArchivar.Core.Data
 {
     public class YearDirectory : FileSystemItemBase
     {
-        private YearDirectory(DirectoryInfo yearDirectory, IFileSystemItem parent)
+        private YearDirectory(DirectoryInfoBase yearDirectory, IFileSystemItem parent)
             : base(yearDirectory, yearDirectory.Name, parent, true, ClubDirectory.TryCreate)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo yearDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfoBase yearDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
             var name = yearDirectory.Name;
