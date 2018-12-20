@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Linq;
 
 namespace FL.LigArchivar.Core.Data
@@ -19,6 +20,19 @@ namespace FL.LigArchivar.Core.Data
 
             var year = GetYear(self.Parent);
             return year;
+        }
+
+        public static string GetClubChar(this IFileSystemItem self)
+        {
+            if (self == null)
+                return null;
+
+            var selfAsClub = self as ClubDirectory;
+            if (selfAsClub != null)
+                return selfAsClub.Name[0].ToString(CultureInfo.InvariantCulture);
+
+            var clubChar = GetClubChar(self.Parent);
+            return clubChar;
         }
 
         public static IFileSystemItem GetChild(this IFileSystemItemWithChildren self, string path)

@@ -25,5 +25,15 @@ namespace FL.LigArchivar.Core.Tests.Data
 
             Assert.AreEqual("2018", actualYear);
         }
+
+        [Test]
+        public void GetClubChar()
+        {
+            var child = _root.GetChild(@"Digitalfoto\2018\A-Albverein");
+
+            var actualYear = child.GetClubChar();
+
+            Assert.AreEqual("A", actualYear);
+        }
     }
 }
