@@ -9,15 +9,16 @@ namespace FL.LigArchivar.Core.Data
     {
         private readonly bool _itemItselfIsValid;
 
-        public FileSystemItemBase(DirectoryInfo directory, string name, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
+        public FileSystemItemBase(DirectoryInfo directory, string name, IFileSystemItem parent, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
         {
             Directory = directory;
             Name = name;
+            Parent = parent;
             _itemItselfIsValid = isValid;
 
             if (tryCreateChild != null)
             {
-                Children = directory.GetChildrenFileSystemItems(tryCreateChild);
+                Children = directory.GetChildrenFileSystemItems(parent, tryCreateChild);
             }
             else
             {
@@ -31,7 +32,9 @@ namespace FL.LigArchivar.Core.Data
 
         public string Name { get; }
 
-        public bool IsValid { get; private set;  }
+        public bool IsValid { get; private set; }
+
+        public IFileSystemItem Parent { get; }
 
         public IImmutableList<IFileSystemItem> Children { get; }
 

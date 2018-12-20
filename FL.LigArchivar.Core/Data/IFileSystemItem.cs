@@ -8,6 +8,8 @@ namespace FL.LigArchivar.Core.Data
 
         bool IsValid { get; }
 
+        IFileSystemItem Parent { get; }
+
         IImmutableList<IFileSystemItem> Children { get; }
     }
 }

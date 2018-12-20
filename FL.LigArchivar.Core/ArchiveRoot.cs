@@ -15,7 +15,7 @@ namespace FL.LigArchivar.Core
         {
             _directoryPath = archiveRootDirectoryPath;
             _directoryInfo = new DirectoryInfo(archiveRootDirectoryPath);
-            Children = _directoryInfo.GetChildrenFileSystemItems(AssetDirectory.TryCreate);
+            Children = _directoryInfo.GetChildrenFileSystemItems(null, AssetDirectory.TryCreate);
         }
 
         public static bool TryCreate(string archiveRootDirectoryPath, out ArchiveRoot archivar)

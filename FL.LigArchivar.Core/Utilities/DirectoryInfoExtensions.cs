@@ -5,25 +5,25 @@ using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.Core.Utilities
 {
-    public delegate bool TryCreateFileSystemItem(DirectoryInfo directory, out IFileSystemItem item);
+    public delegate bool TryCreateFileSystemItem(DirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem item);
 
     public static class DirectoryInfoExtensions
     {
-        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this DirectoryInfo self, TryCreateFileSystemItem tryCreateChild)
+        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this DirectoryInfo self, IFileSystemItem parent, TryCreateFileSystemItem tryCreateChild)
         {
             var items = new List<IFileSystemItem>();
 
             var subDirectories = self.GetDirectories();
             foreach (var subDirectory in subDirectories)
             {
-                var created = tryCreateChild(subDirectory, out var item);
+                var created = tryCreateChild(subDirectory, parent, out var item);
                 if (created)
                 {
                     items.Add(item);
                 }
                 else
                 {
-                    var invalidItem = new InvalidFileSystemItem(subDirectory);
+                    var invalidItem = new InvalidFileSystemItem(subDirectory, parent);
                     items.Add(invalidItem);
                 }
             }

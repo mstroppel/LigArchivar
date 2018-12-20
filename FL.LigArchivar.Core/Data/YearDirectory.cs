@@ -5,12 +5,12 @@ namespace FL.LigArchivar.Core.Data
 {
     public class YearDirectory : FileSystemItemBase
     {
-        private YearDirectory(DirectoryInfo yearDirectory)
-            : base(yearDirectory, yearDirectory.Name, true, ClubDirectory.TryCreate)
+        private YearDirectory(DirectoryInfo yearDirectory, IFileSystemItem parent)
+            : base(yearDirectory, yearDirectory.Name, parent, true, ClubDirectory.TryCreate)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo yearDirectory, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfo yearDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
             var name = yearDirectory.Name;
@@ -24,7 +24,7 @@ namespace FL.LigArchivar.Core.Data
             if (under1700 || over3000)
                 return false;
 
-            directory = new YearDirectory(yearDirectory);
+            directory = new YearDirectory(yearDirectory, parent);
             return true;
         }
     }
