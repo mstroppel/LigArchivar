@@ -13,6 +13,7 @@ namespace FL.LigArchivar.ViewModels.Data
         {
             _inner = inner;
             Children = inner.Children
+                .Where(item => !(item is IgnoredFileSystemItem))
                 .Select(item => item.ToTreeViewItem(this))
                 .ToImmutableList();
         }
