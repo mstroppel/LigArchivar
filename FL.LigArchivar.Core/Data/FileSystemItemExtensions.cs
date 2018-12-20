@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace FL.LigArchivar.Core.Data
@@ -10,13 +11,14 @@ namespace FL.LigArchivar.Core.Data
         public static string GetYear(this IFileSystemItem self)
         {
             if (self == null)
-                throw new InvalidOperationException("Extension Method GetYear() must be called on a file system item that underneath the YearDirectory.");
+                return null;
 
             var selfAsYear = self as YearDirectory;
             if (selfAsYear != null)
                 return selfAsYear.Name;
 
-            return GetYear(self.Parent);
+            var year = GetYear(self.Parent);
+            return year;
         }
 
         public static IFileSystemItem GetChild(this IFileSystemItemWithChildren self, string path)
@@ -31,10 +33,20 @@ namespace FL.LigArchivar.Core.Data
 
         public static IFileSystemItem GetChild(this IFileSystemItemWithChildren self, IEnumerable<string> path)
         {
-            var name = path.First();
+            var name = path.FirstOrDefault();
+            if (name == null)
+                return self as IFileSystemItem;
 
             var child = self.Children
                 .FirstOrDefault(item => item.Name == name);
+
+            var nextPaths = path.Skip(1).ToImmutableList();
+            if (nextPaths.IsEmpty)
+                return child as IFileSystemItem;
+
+            var childWithChildren = child as IFileSystemItemWithChildren;
+            if (childWithChildren != null)
+                child = childWithChildren.GetChild(nextPaths);
 
             return child;
         }
