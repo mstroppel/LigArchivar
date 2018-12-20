@@ -12,7 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildSupport", "BuildSuppor
 		FL.LigArchivar.ruleset = FL.LigArchivar.ruleset
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FL.LigArchivar.Core", "FL.LigArchivar.Core\FL.LigArchivar.Core.csproj", "{8821F860-4FC4-4F9D-88F1-858EE6A8605C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FL.LigArchivar.Core", "FL.LigArchivar.Core\FL.LigArchivar.Core.csproj", "{8821F860-4FC4-4F9D-88F1-858EE6A8605C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FL.LigArchivar.Core.Tests", "FL.LigArchivar.Core.Tests\FL.LigArchivar.Core.Tests.csproj", "{40474F40-199D-4B05-890B-BFBE16AF0F12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +30,10 @@ Global
 		{8821F860-4FC4-4F9D-88F1-858EE6A8605C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8821F860-4FC4-4F9D-88F1-858EE6A8605C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8821F860-4FC4-4F9D-88F1-858EE6A8605C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40474F40-199D-4B05-890B-BFBE16AF0F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40474F40-199D-4B05-890B-BFBE16AF0F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40474F40-199D-4B05-890B-BFBE16AF0F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40474F40-199D-4B05-890B-BFBE16AF0F12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,10 +12,19 @@ namespace FL.LigArchivar.ViewModels.Data
             : base(inner.Name, parent, inner.IsValid)
         {
             _inner = inner;
-            Children = inner.Children
-                .Where(item => !(item is IgnoredFileSystemItem))
-                .Select(item => item.ToTreeViewItem(this))
-                .ToImmutableList();
+
+            var asWithChildren = inner as IFileSystemItemWithChildren;
+            if (asWithChildren != null)
+            {
+                Children = asWithChildren.Children
+                    .Where(item => !(item is IgnoredFileSystemItem))
+                    .Select(item => item.ToTreeViewItem(this))
+                    .ToImmutableList();
+            }
+            else
+            {
+                Children = ImmutableList<ITreeViewItem>.Empty;
+            }
         }
 
         public override IImmutableList<ITreeViewItem> Children { get; }
