@@ -16,12 +16,12 @@ namespace FL.LigArchivar.Core.Data
             @"Video"
         }.ToImmutableList();
 
-        private AssetDirectory(DirectoryInfo assetDirectory)
-            : base(assetDirectory, assetDirectory.Name, true, TryCreateChild)
+        private AssetDirectory(DirectoryInfo assetDirectory, IFileSystemItem parent)
+            : base(assetDirectory, assetDirectory.Name, parent, true, TryCreateChild)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo assetDirectory, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 
@@ -33,19 +33,19 @@ namespace FL.LigArchivar.Core.Data
             if (_allowedNames.All(item => item != name))
                 return false;
 
-            directory = new AssetDirectory(assetDirectory);
+            directory = new AssetDirectory(assetDirectory, parent);
             return true;
         }
 
-        private static bool TryCreateChild(DirectoryInfo directory, out IFileSystemItem fileSystemItem)
+        private static bool TryCreateChild(DirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem fileSystemItem)
         {
-            var isYear = YearDirectory.TryCreate(directory, out fileSystemItem);
+            var isYear = YearDirectory.TryCreate(directory, parent, out fileSystemItem);
             if (isYear)
                 return true;
 
             if (directory.Name == _folderStructureFolderName)
             {
-                fileSystemItem = new IgnoredFileSystemItem(directory);
+                fileSystemItem = new IgnoredFileSystemItem(directory, parent);
                 return true;
             }
 

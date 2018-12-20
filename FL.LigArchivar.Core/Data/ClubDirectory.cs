@@ -27,12 +27,12 @@ namespace FL.LigArchivar.Core.Data
             @"Z-Kegler"
         }.ToImmutableList();
 
-        private ClubDirectory(DirectoryInfo assetDirectory)
-            : base(assetDirectory, assetDirectory.Name, true)
+        private ClubDirectory(DirectoryInfo assetDirectory, IFileSystemItem parent)
+            : base(assetDirectory, assetDirectory.Name, parent, true)
         {
         }
 
-        public static bool TryCreate(DirectoryInfo assetDirectory, out IFileSystemItem directory)
+        public static bool TryCreate(DirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 
@@ -44,7 +44,7 @@ namespace FL.LigArchivar.Core.Data
             if (_allowedNames.All(item => item != name))
                 return false;
 
-            directory = new ClubDirectory(assetDirectory);
+            directory = new ClubDirectory(assetDirectory, parent);
             return true;
         }
     }
