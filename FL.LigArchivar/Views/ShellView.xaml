@@ -44,7 +44,7 @@
             Content="_Durchsuchen..." />
         <!--  folder tree  -->
         <TreeView
-            x:Name="Root"
+            x:Name="RootChildren"
             Grid.Row="1"
             Grid.RowSpan="4"
             Grid.Column="0"

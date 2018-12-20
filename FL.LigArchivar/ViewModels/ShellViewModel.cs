@@ -33,21 +33,40 @@ namespace FL.LigArchivar.ViewModels
 
         private string _rootDirectory;
 
-        public IImmutableList<ITreeViewItem> Root
+        private ArchiveRootTreeViewItem Root
+        {
+            get => _root;
+            set
+            {
+                if (_root != value)
+                {
+                    _root = value;
+                    NotifyOfPropertyChange(nameof(Root));
+                    if (_root != null)
+                        RootChildren = _root.Children;
+                    else
+                        RootChildren = ImmutableList<ITreeViewItem>.Empty;
+                }
+            }
+        }
+
+        private ArchiveRootTreeViewItem _root = null;
+
+        public IImmutableList<ITreeViewItem> RootChildren
         {
             get
             {
-                return _root;
+                return _rootChildren;
             }
 
             private set
             {
-                _root = value;
-                NotifyOfPropertyChange(nameof(Root));
+                _rootChildren = value;
+                NotifyOfPropertyChange(nameof(RootChildren));
             }
         }
 
-        private IImmutableList<ITreeViewItem> _root;
+        private IImmutableList<ITreeViewItem> _rootChildren;
 
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
         {
@@ -63,10 +82,13 @@ namespace FL.LigArchivar.ViewModels
             {
                 _currentRootDirectorySearched = newPath;
 
-                var root = await Task.Run(() => GetArchiveRoot(newPath)).ConfigureAwait(false);
+                var archiveRoot = await Task.Run(() => GetArchiveRoot(newPath)).ConfigureAwait(false);
 
-                if (root == null)
+                if (archiveRoot == null)
+                {
+                    Root = null;
                     return;
+                }
 
                 // If another check was started, this one is no longer valid.
                 if (_currentRootDirectorySearched != newPath)
@@ -75,8 +97,8 @@ namespace FL.LigArchivar.ViewModels
                 Log.Info("New directory " + newPath + " exists!");
                 SaveRootDirectory();
 
-                var rootItem = new ArchiveRootTreeViewItem(root);
-                Root = rootItem.Children;
+                var rootItem = new ArchiveRootTreeViewItem(archiveRoot);
+                Root = rootItem;
             }
             catch (Exception ex)
             {
