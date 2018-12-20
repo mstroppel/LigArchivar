@@ -1,4 +1,5 @@
-﻿using WPFFolderBrowser;
+﻿using FL.LigArchivar.ViewModels;
+using WPFFolderBrowser;
 
 namespace FL.LigArchivar.Views
 {
@@ -34,6 +35,12 @@ namespace FL.LigArchivar.Views
             }
 
             RootDirectory.Text = dialog.FileName;
+        }
+
+        private void RootChildren_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
+        {
+            var viewModel = DataContext as ShellViewModel;
+            viewModel.SelectedItem = e.NewValue;
         }
     }
 }

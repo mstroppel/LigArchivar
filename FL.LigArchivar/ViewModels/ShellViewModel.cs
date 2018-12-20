@@ -64,6 +64,37 @@ namespace FL.LigArchivar.ViewModels
 
         private IImmutableList<ITreeViewItem> _rootChildren;
 
+        internal object SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    NotifyOfPropertyChange(nameof(SelectedItem));
+                    Event = value as EventTreeViewItem;
+                }
+            }
+        }
+
+        private object _selectedItem;
+
+        public EventTreeViewItem Event
+        {
+            get => _event;
+            set
+            {
+                if (_event != value)
+                {
+                    _event = value;
+                    NotifyOfPropertyChange(nameof(Event));
+                }
+            }
+        }
+
+        private EventTreeViewItem _event;
+
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
         {
             if (ArchiveRoot.TryCreate(rootDirectoryPath, out var root))

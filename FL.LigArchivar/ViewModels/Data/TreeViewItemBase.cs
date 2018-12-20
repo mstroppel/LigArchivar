@@ -2,7 +2,7 @@
 
 namespace FL.LigArchivar.ViewModels.Data
 {
-    internal abstract class TreeViewItemBase : ITreeViewItem
+    public abstract class TreeViewItemBase : ITreeViewItem
     {
         private ITreeViewItem _parent;
 
