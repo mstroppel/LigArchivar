@@ -29,7 +29,7 @@ namespace FL.LigArchivar.Core.Data
         }.ToImmutableList();
 
         private ClubDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
-            : base(assetDirectory, assetDirectory.Name, parent, true)
+            : base(assetDirectory, assetDirectory.Name, parent, true, EventDirectory.TryCreate)
         {
         }
 
