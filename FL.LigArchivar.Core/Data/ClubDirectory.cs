@@ -9,7 +9,7 @@ namespace FL.LigArchivar.Core.Data
     {
         private static readonly IImmutableList<string> _allowedNames = new[]
         {
-            @"A-Alberein",
+            @"A-Albverein",
             @"C-Gemischter_Chor",
             @"D-Dorffest",
             @"F-Film-Liga",
