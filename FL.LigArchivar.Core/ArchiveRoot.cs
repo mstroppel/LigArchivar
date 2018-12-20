@@ -6,7 +6,7 @@ using FL.LigArchivar.Core.Utilities;
 
 namespace FL.LigArchivar.Core
 {
-    public class ArchiveRoot
+    public class ArchiveRoot : IFileSystemItemWithChildren
     {
         private readonly string _directoryPath;
         private readonly DirectoryInfoBase _directoryInfo;

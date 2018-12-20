@@ -6,7 +6,7 @@ using FL.LigArchivar.Core.Utilities;
 
 namespace FL.LigArchivar.Core.Data
 {
-    public abstract class FileSystemItemBase : IFileSystemItem
+    public abstract class FileSystemItemBase : IFileSystemItem, IFileSystemItemWithChildren
     {
         private readonly bool _itemItselfIsValid;
 
