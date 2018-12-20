@@ -54,11 +54,7 @@ namespace FL.LigArchivar.ViewModels
 
         public IImmutableList<ITreeViewItem> RootChildren
         {
-            get
-            {
-                return _rootChildren;
-            }
-
+            get { return _rootChildren; }
             private set
             {
                 _rootChildren = value;
