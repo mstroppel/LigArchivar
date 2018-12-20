@@ -6,7 +6,7 @@ namespace FL.LigArchivar.Core.Data
     public class YearDirectory : FileSystemItemBase
     {
         private YearDirectory(DirectoryInfo yearDirectory)
-            : base(yearDirectory, yearDirectory.Name, true, null)
+            : base(yearDirectory, yearDirectory.Name, true, ClubDirectory.TryCreate)
         {
         }
 
