@@ -35,6 +35,7 @@ namespace FL.LigArchivar.ViewModels.Data
         {
             _inner.LoadChildren();
             Files = _inner.Children
+                .Where(item => !item.IsIgnored)
                 .Select(item => new FileListItem(item))
                 .ToImmutableList();
         }

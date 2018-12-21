@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
+using System.Linq;
 using System.Text.RegularExpressions;
 using FL.LigArchivar.Core.Utilities;
 
@@ -8,6 +9,13 @@ namespace FL.LigArchivar.Core.Data
 {
     public class DataFile
     {
+        private static readonly IImmutableList<string> _ignoredFiles = new string[]
+        {
+            ".BridgeCache",
+            ".BridgeCacheT",
+            "Thumbs.db",
+        }.ToImmutableList();
+
         public DataFile(FileInfoBase file, EventDirectory parent)
         {
             var name = FileSystemProvider.Instance.Path.GetFileNameWithoutExtension(file.FullName);
@@ -16,9 +24,11 @@ namespace FL.LigArchivar.Core.Data
 
             var match = regex.Match(name);
 
+            IsIgnored = _ignoredFiles.Any(item => item == file.Name);
+
             if (!match.Success)
                 IsValid = false;
-            else if (match.Groups.Count != 6)
+            else if (match.Groups.Count != 7)
                 IsValid = false;
             else
                 IsValid = true;
@@ -30,6 +40,8 @@ namespace FL.LigArchivar.Core.Data
         }
 
         public string Name { get; }
+
+        public bool IsIgnored { get; }
 
         public bool IsValid { get; }
 
