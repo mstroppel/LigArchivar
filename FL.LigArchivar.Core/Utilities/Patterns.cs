@@ -8,7 +8,7 @@
         private const string DayPart = @"(0[0-9]|[12][0-9]|3[01])";
 
         private const string EventNamePart = @"([a-zA-Z0-9\-_]{1,200})";
-        private const string NumberPart = @"[0-9]{3}";
+        private const string NumberPart = @"([0-9]{3})";
         private const string PropertyPart = @"([a-zA-Z0-9\-_]{1,200})";
 
         public static readonly string EventDirectory = $"{ClubPart}_{YearPart}-{MonthPart}-{DayPart}_{EventNamePart}";

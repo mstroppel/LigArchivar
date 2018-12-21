@@ -19,21 +19,9 @@ namespace FL.LigArchivar.Core.Data
         public DataFile(FileInfoBase file, EventDirectory parent)
         {
             var name = FileSystemProvider.Instance.Path.GetFileNameWithoutExtension(file.FullName);
-
-            var regex = new Regex(Patterns.DataFile);
-
-            var match = regex.Match(name);
-
-            IsIgnored = _ignoredFiles.Any(item => item == file.Name);
-
-            if (!match.Success)
-                IsValid = false;
-            else if (match.Groups.Count != 7)
-                IsValid = false;
-            else
-                IsValid = true;
-
             Name = name;
+            IsIgnored = _ignoredFiles.Any(item => item == file.Name);
+            IsValid = GetIsValid(name, parent);
             Parent = parent;
 
             Files = new FileInfoBase[] { file }.ToImmutableList();
@@ -55,6 +43,36 @@ namespace FL.LigArchivar.Core.Data
                 throw new InvalidOperationException($"Cannot add a file with name '{file.Name}' to the DataFile with name '{Name}'.");
 
             Files = Files.AddRange(file.Files);
+        }
+
+        private static bool GetIsValid(string name, EventDirectory parent)
+        {
+            var regex = new Regex(Patterns.DataFile);
+            var match = regex.Match(name);
+
+            if (!match.Success)
+                return false;
+
+            if (match.Groups.Count != 8)
+                return false;
+
+            var clubChar = match.Groups[1].Value;
+            if (clubChar != parent.ClubChar)
+                return false;
+
+            var year = match.Groups[2].Value;
+            if (year != parent.Year)
+                return false;
+
+            var month = match.Groups[3].Value;
+            if (month != parent.Month)
+                return false;
+
+            var day = match.Groups[4].Value;
+            if (day != parent.Day)
+                return false;
+
+            return true;
         }
     }
 }
