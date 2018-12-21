@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Linq;
@@ -42,6 +43,16 @@ namespace FL.LigArchivar.Core.Data
             }
 
             Children = children.ToImmutableList();
+        }
+
+        public void SortByName()
+        {
+            Children = Children.OrderBy(item => item.Name).ToImmutableList();
+        }
+
+        public void SortByDate()
+        {
+            Children = Children.OrderBy(item => item.Files[0].LastWriteTimeUtc).ToImmutableList();
         }
 
         public string Name { get; }

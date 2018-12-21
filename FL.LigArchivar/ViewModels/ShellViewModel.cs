@@ -99,6 +99,29 @@ namespace FL.LigArchivar.ViewModels
 
         private EventTreeViewItem _event;
 
+        public void SortByName()
+        {
+            var local = Event;
+            if (local == null)
+                return;
+
+            local.SortByName();
+        }
+
+        public void SortByDate()
+        {
+            var local = Event;
+            if (local == null)
+                return;
+
+            local.SortByDate();
+        }
+
+        public void Rename()
+        {
+
+        }
+
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
         {
             if (ArchiveRoot.TryCreate(rootDirectoryPath, out var root))

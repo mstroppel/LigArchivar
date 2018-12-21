@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
 using FL.LigArchivar.Core.Data;
 
@@ -36,6 +37,23 @@ namespace FL.LigArchivar.ViewModels.Data
         internal void LoadChildren()
         {
             _inner.LoadChildren();
+            UpdateFilesFromInner();
+        }
+
+        internal void SortByName()
+        {
+            _inner.SortByName();
+            UpdateFilesFromInner();
+        }
+
+        internal void SortByDate()
+        {
+            _inner.SortByDate();
+            UpdateFilesFromInner();
+        }
+
+        private void UpdateFilesFromInner()
+        {
             Files = _inner.Children
                 .Where(item => !item.IsIgnored)
                 .Select(item => new FileListItem(item))
