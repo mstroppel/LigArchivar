@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Caliburn.Micro;
 
 namespace FL.LigArchivar.ViewModels.Data
@@ -26,5 +27,18 @@ namespace FL.LigArchivar.ViewModels.Data
         public bool IsValid { get; }
 
         public abstract IImmutableList<ITreeViewItem> Children { get; }
+
+        internal ArchiveRootTreeViewItem GetRoot()
+        {
+            var parentAsRoot = _parent as ArchiveRootTreeViewItem;
+            if (parentAsRoot != null)
+                return parentAsRoot;
+
+            var parentAsMe = _parent as TreeViewItemBase;
+            if (parentAsMe != null)
+                return parentAsMe.GetRoot();
+
+            throw new InvalidOperationException("Cannot find root!");
+        }
     }
 }

@@ -52,6 +52,24 @@ namespace FL.LigArchivar.ViewModels.Data
             UpdateFilesFromInner();
         }
 
+        internal void Rename()
+        {
+            try
+            {
+                _inner.Rename();
+            }
+            catch (Exception e)
+            {
+                var root = GetRoot();
+                if (root == null)
+                    return;
+
+                root.MessageBox.ShowException(e);
+            }
+
+            UpdateFilesFromInner();
+        }
+
         private void UpdateFilesFromInner()
         {
             Files = _inner.Children

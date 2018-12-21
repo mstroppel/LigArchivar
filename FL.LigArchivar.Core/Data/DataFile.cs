@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Caliburn.Micro;
 using FL.LigArchivar.Core.Utilities;
 
 namespace FL.LigArchivar.Core.Data
@@ -15,6 +16,8 @@ namespace FL.LigArchivar.Core.Data
             ".BridgeCacheT",
             "Thumbs.db",
         }.ToImmutableList();
+
+        private static readonly ILog _log = LogManager.GetLog(typeof(EventDirectory));
 
         public DataFile(FileInfoBase file, EventDirectory parent)
         {
@@ -43,6 +46,23 @@ namespace FL.LigArchivar.Core.Data
                 throw new InvalidOperationException($"Cannot add a file with name '{file.Name}' to the DataFile with name '{Name}'.");
 
             Files = Files.AddRange(file.Files);
+        }
+
+        public void RenameFiles(string newNameWithoutExtension)
+        {
+            foreach (var file in Files)
+            {
+                var directory = file.Directory.FullName;
+                var fileName = newNameWithoutExtension + file.Extension;
+
+                var newPath = FileSystemProvider.Instance.Path.Combine(directory, fileName);
+
+                if (newPath == file.FullName)
+                    continue;
+
+                _log.Info($"Moving '{file.FullName}' to '{newPath}'.");
+                file.MoveTo(newPath);
+            }
         }
 
         private static bool GetIsValid(string name, EventDirectory parent)
