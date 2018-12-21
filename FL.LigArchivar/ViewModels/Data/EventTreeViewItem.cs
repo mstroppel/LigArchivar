@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
@@ -16,5 +17,10 @@ namespace FL.LigArchivar.ViewModels.Data
         public string FilePrefix => _inner.FilePrefix;
 
         public override IImmutableList<ITreeViewItem> Children { get; } = ImmutableList<ITreeViewItem>.Empty;
+
+        internal void LoadChildren()
+        {
+            _inner.LoadChildren();
+        }
     }
 }

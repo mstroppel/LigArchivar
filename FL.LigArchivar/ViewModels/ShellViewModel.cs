@@ -73,7 +73,8 @@ namespace FL.LigArchivar.ViewModels
                 {
                     _selectedItem = value;
                     NotifyOfPropertyChange(nameof(SelectedItem));
-                    Event = value as EventTreeViewItem;
+                    var asEvent = value as EventTreeViewItem;
+                    Event = asEvent;
                 }
             }
         }
@@ -88,6 +89,9 @@ namespace FL.LigArchivar.ViewModels
                 if (_event != value)
                 {
                     _event = value;
+                    if (value != null)
+                        value.LoadChildren();
+
                     NotifyOfPropertyChange(nameof(Event));
                 }
             }
