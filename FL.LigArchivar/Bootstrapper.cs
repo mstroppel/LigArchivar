@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
+using FL.LigArchivar.MessageBox;
 using FL.LigArchivar.Utilities;
 using FL.LigArchivar.ViewModels;
 
@@ -28,6 +29,7 @@ namespace FL.LigArchivar
         {
             container = new SimpleContainer();
             container.Singleton<IWindowManager, WindowManager>();
+            container.Singleton<IMessageBox, XamlMessageBox>();
             container.PerRequest<ShellViewModel>();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using FL.LigArchivar.Core;
+using FL.LigArchivar.MessageBox;
 using FL.LigArchivar.ViewModels.Data;
 
 namespace FL.LigArchivar.ViewModels
@@ -10,11 +11,13 @@ namespace FL.LigArchivar.ViewModels
     public class ShellViewModel : Screen
     {
         private static readonly ILog Log = LogManager.GetLog(typeof(ShellViewModel));
+        private readonly IMessageBox _messageBox;
         private string _currentRootDirectorySearched;
 
-        public ShellViewModel()
+        public ShellViewModel(IMessageBox messageBox)
         {
             RootDirectory = Properties.Settings.Default.RootDirectory;
+            _messageBox = messageBox;
         }
 
         public string RootDirectory
@@ -119,7 +122,11 @@ namespace FL.LigArchivar.ViewModels
 
         public void Rename()
         {
+            var local = Event;
+            if (local == null)
+                return;
 
+            local.Rename();
         }
 
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
@@ -151,7 +158,7 @@ namespace FL.LigArchivar.ViewModels
                 Log.Info("New directory " + newPath + " exists!");
                 SaveRootDirectory();
 
-                var rootItem = new ArchiveRootTreeViewItem(archiveRoot);
+                var rootItem = new ArchiveRootTreeViewItem(archiveRoot, _messageBox);
                 Root = rootItem;
             }
             catch (Exception ex)

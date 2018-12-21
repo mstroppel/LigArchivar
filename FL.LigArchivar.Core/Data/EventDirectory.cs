@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Linq;
@@ -43,6 +42,26 @@ namespace FL.LigArchivar.Core.Data
             }
 
             Children = children.ToImmutableList();
+        }
+
+        public void Rename()
+        {
+            try
+            {
+                var localChildren = Children;
+                var number = 1;
+
+                foreach (var child in localChildren.Where(item => !item.IsIgnored))
+                {
+                    var newName = $"{FilePrefix}{number:000}";
+                    child.RenameFiles(newName);
+                    ++number;
+                }
+            }
+            finally
+            {
+                LoadChildren();
+            }
         }
 
         public void SortByName()
