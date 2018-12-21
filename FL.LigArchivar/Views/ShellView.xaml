@@ -8,31 +8,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FL.LigArchivar.ViewModels"
     Title="ShellView"
-    Width="1200"
-    Height="1000"
+    Width="1400"
+    Height="800"
     d:DataContext="{d:DesignInstance Type=vm:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
     <Window.Resources>
         <converters:IsValidColorConverter x:Key="IsValidColorConverter" />
-
         <Style x:Key="ValidTextBlock" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" />
         </Style>
-
     </Window.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
-            <RowDefinition Height="35" />
-            <RowDefinition Height="90" />
             <RowDefinition Height="1*" />
-            <RowDefinition Height="35" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80*" />
             <ColumnDefinition Width="80*" />
-            <ColumnDefinition Width="40*" />
             <ColumnDefinition Width="40*" />
         </Grid.ColumnDefinitions>
         <!--  root directory  -->
@@ -54,7 +48,6 @@
         <TreeView
             x:Name="RootChildren"
             Grid.Row="1"
-            Grid.RowSpan="4"
             Grid.Column="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -69,7 +62,6 @@
         <DataGrid
             x:Name="Event_Files"
             Grid.Row="1"
-            Grid.RowSpan="4"
             Grid.Column="1"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -99,58 +91,41 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <!--  Prefix  -->
-        <TextBlock
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="5"
-            Text="Prefix:" />
-        <TextBlock
-            x:Name="Event_FilePrefix"
-            Grid.Row="1"
-            Grid.Column="3"
-            Margin="5" />
-        <!--  Sorting  -->
-        <GroupBox
-            Grid.Row="2"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            VerticalAlignment="Top"
-            Header="Sortierung">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Button
-                    x:Name="SortByName"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="5"
-                    Content="nach Name" />
-                <Button
-                    x:Name="SortByDate"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5"
-                    Content="nach Datum" />
+        <StackPanel Grid.Row="1" Grid.Column="2">
+            <!--  Prefix  -->
+            <TextBlock
+                Margin="5"
+                HorizontalAlignment="Stretch"
+                Text="Prefix:" />
+            <TextBlock x:Name="Event_FilePrefix" Margin="5" />
+            <!--  Sorting  -->
+            <GroupBox HorizontalAlignment="Stretch" Header="Sortierung">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Button
+                        x:Name="SortByName"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="5"
+                        Content="nach Name" />
+                    <Button
+                        x:Name="SortByDate"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="5"
+                        Content="nach Datum" />
 
-            </Grid>
-        </GroupBox>
-        <CheckBox
-            x:Name="RenameNoneJpeg"
-            Grid.Row="3"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            Margin="5"
-            Content="Dateiengruppe ohne _JPEG umbenennen" />
-        <!--  and action  -->
-        <Button
-            x:Name="Rename"
-            Grid.Row="4"
-            Grid.Column="2"
-            Grid.ColumnSpan="2"
-            Margin="5"
-            Content="Umbenennen" />
+                </Grid>
+            </GroupBox>
+            <!--  and action  -->
+            <Button
+                x:Name="Rename"
+                Margin="5"
+                HorizontalAlignment="Stretch"
+                Content="Umbenennen" />
+        </StackPanel>
     </Grid>
 </Window>
