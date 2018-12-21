@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FL.LigArchivar.ViewModels"
     Title="ShellView"
-    Width="800"
-    Height="600"
+    Width="1200"
+    Height="1000"
     d:DataContext="{d:DesignInstance Type=vm:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
@@ -62,7 +62,7 @@
         </TreeView>
         <!--  information  -->
         <DataGrid
-            x:Name="RenameFiles"
+            x:Name="Event_Children"
             Grid.Row="1"
             Grid.RowSpan="4"
             Grid.Column="1"
@@ -70,8 +70,14 @@
             VerticalAlignment="Stretch"
             AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Filename}" Header="Name" />
-                <DataGridTextColumn Binding="{Binding Extensions}" Header="Erweiterungen" />
+                <DataGridTextColumn
+                    Width="250"
+                    Binding="{Binding Name}"
+                    Header="Name" />
+                <DataGridTextColumn
+                    Width="100"
+                    Binding="{Binding Extensions}"
+                    Header="Erweiterungen" />
             </DataGrid.Columns>
         </DataGrid>
         <!--  Prefix  -->

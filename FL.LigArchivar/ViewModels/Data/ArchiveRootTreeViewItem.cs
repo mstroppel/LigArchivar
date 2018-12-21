@@ -4,7 +4,7 @@ using FL.LigArchivar.Core;
 
 namespace FL.LigArchivar.ViewModels.Data
 {
-    internal class ArchiveRootTreeViewItem : TreeViewItemBase
+    internal class ArchiveRootTreeViewItem : TreeViewItemBase, ITreeViewItemWithChildren
     {
         private readonly ArchiveRoot _root;
 
@@ -17,6 +17,6 @@ namespace FL.LigArchivar.ViewModels.Data
                 .ToImmutableList();
         }
 
-        public override IImmutableList<ITreeViewItem> Children { get; }
+        public IImmutableList<ITreeViewItem> Children { get; }
     }
 }
