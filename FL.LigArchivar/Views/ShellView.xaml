@@ -60,7 +60,7 @@
             VerticalAlignment="Stretch"
             SelectedItemChanged="RootChildren_SelectedItemChanged">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItemWithChildren}" ItemsSource="{Binding Children}">
+                <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItem}" ItemsSource="{Binding Children}">
                     <TextBlock Foreground="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" Text="{Binding Name}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

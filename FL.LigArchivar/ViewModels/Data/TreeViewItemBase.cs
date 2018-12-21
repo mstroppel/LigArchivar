@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System.Collections.Immutable;
+using Caliburn.Micro;
 
 namespace FL.LigArchivar.ViewModels.Data
 {
@@ -23,5 +24,7 @@ namespace FL.LigArchivar.ViewModels.Data
         public string FullPath { get; }
 
         public bool IsValid { get; }
+
+        public abstract IImmutableList<ITreeViewItem> Children { get; }
     }
 }

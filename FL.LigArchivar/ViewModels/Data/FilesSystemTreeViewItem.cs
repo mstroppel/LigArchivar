@@ -4,7 +4,7 @@ using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
 {
-    internal class FilesSystemTreeViewItem : TreeViewItemBase, ITreeViewItemWithChildren
+    internal class FilesSystemTreeViewItem : TreeViewItemBase
     {
         private readonly IFileSystemItem _inner;
 
@@ -27,6 +27,6 @@ namespace FL.LigArchivar.ViewModels.Data
             }
         }
 
-        public IImmutableList<ITreeViewItem> Children { get; }
+        public override IImmutableList<ITreeViewItem> Children { get; }
     }
 }
