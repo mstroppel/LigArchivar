@@ -1,19 +1,20 @@
-﻿using System.IO.Abstractions;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO.Abstractions;
+using System.Linq;
 using System.Text.RegularExpressions;
+using FL.LigArchivar.Core.Utilities;
 
 namespace FL.LigArchivar.Core.Data
 {
-    public class EventDirectory : FileSystemItemBase
+    public class EventDirectory : IFileSystemItem
     {
-        private const string RegExClubPart = @"([A-Z])";
-        private const string RegExYearPart = @"([12][0-9]{3})";
-        private const string RegExMonthPart = @"(0[1-9]|1[0-2])";
-        private const string RegExDayPart = @"(0[0-9]|[12][0-9]|3[01])";
-        private const string RegExEventNamePart = @"([a-zA-Z0-9\-_]{1,200})";
-
         public EventDirectory(DirectoryInfoBase directory, IFileSystemItem parent, bool isValid, string clubChar, string year, string month, string day, string eventName)
-            : base(directory, directory.Name, parent, isValid)
         {
+            Name = directory.Name;
+            Directory = directory;
+            Parent = parent;
+            IsValid = isValid;
             ClubChar = clubChar;
             Year = year;
             Month = month;
@@ -21,7 +22,35 @@ namespace FL.LigArchivar.Core.Data
             EventName = eventName;
 
             FilePrefix = clubChar + "_" + year + "-" + month + "-" + day + "_";
+
+            Children = ImmutableList<DataFile>.Empty;
         }
+
+        public void LoadChildren()
+        {
+            var files = Directory.GetFiles();
+            var children = new List<DataFile>();
+
+            foreach (var file in files)
+            {
+                var instance = new DataFile(file, this);
+                var existing = children.FirstOrDefault(item => item.Name == instance.Name);
+                if (existing == null)
+                    children.Add(instance);
+                else
+                    existing.AddFile(instance);
+            }
+
+            Children = children.ToImmutableList();
+        }
+
+        public string Name { get; }
+
+        public bool IsValid { get; }
+
+        public IFileSystemItem Parent { get; }
+
+        public DirectoryInfoBase Directory { get; }
 
         public string ClubChar { get; }
 
@@ -35,6 +64,8 @@ namespace FL.LigArchivar.Core.Data
 
         public string FilePrefix { get; }
 
+        public IImmutableList<DataFile> Children { get; private set; }
+
         public static bool TryCreate(DirectoryInfoBase eventDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
@@ -44,8 +75,7 @@ namespace FL.LigArchivar.Core.Data
             var expectedClubChar = parent.GetClubChar();
             var expectedYear = parent.GetYear();
 
-            var regexString = $"{RegExClubPart}_{RegExYearPart}-{RegExMonthPart}-{RegExDayPart}_{RegExEventNamePart}";
-            var regex = new Regex(regexString);
+            var regex = new Regex(Patterns.EventDirectory);
 
             var match = regex.Match(name);
 
