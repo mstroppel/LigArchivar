@@ -10,7 +10,6 @@ namespace FL.LigArchivar.ViewModels.Data
 
         public FileListItem(DataFile inner)
         {
-            Name = inner.Name;
             _inner = inner;
 
             var extensions = inner.Files
@@ -20,8 +19,10 @@ namespace FL.LigArchivar.ViewModels.Data
             Extensions = extensionsAsString;
         }
 
-        public string Name { get; }
+        public string Name => _inner.Name;
 
         public string Extensions { get; }
+
+        public bool IsValid => _inner.IsValid;
     }
 }
