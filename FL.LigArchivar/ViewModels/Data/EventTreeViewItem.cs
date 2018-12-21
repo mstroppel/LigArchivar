@@ -1,6 +1,6 @@
-﻿using FL.LigArchivar.Core.Data;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
+using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
 {
@@ -16,25 +16,25 @@ namespace FL.LigArchivar.ViewModels.Data
 
         public string FilePrefix => _inner.FilePrefix;
 
-        public IImmutableList<FileListItem> Children
+        public IImmutableList<FileListItem> Files
         {
-            get => _children;
+            get => _files;
             set
             {
-                if (_children != value)
+                if (_files != value)
                 {
-                    _children = value;
-                    NotifyOfPropertyChange(nameof(Children));
+                    _files = value;
+                    NotifyOfPropertyChange(nameof(Files));
                 }
             }
         }
 
-        private IImmutableList<FileListItem> _children = ImmutableList<FileListItem>.Empty;
+        private IImmutableList<FileListItem> _files = ImmutableList<FileListItem>.Empty;
 
         internal void LoadChildren()
         {
             _inner.LoadChildren();
-            Children = _inner.Children
+            Files = _inner.Children
                 .Select(item => new FileListItem(item))
                 .ToImmutableList();
         }
