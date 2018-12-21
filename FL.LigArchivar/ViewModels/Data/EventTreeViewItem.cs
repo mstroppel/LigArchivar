@@ -29,6 +29,8 @@ namespace FL.LigArchivar.ViewModels.Data
             }
         }
 
+        public override IImmutableList<ITreeViewItem> Children { get; } = ImmutableList<ITreeViewItem>.Empty;
+
         private IImmutableList<FileListItem> _files = ImmutableList<FileListItem>.Empty;
 
         internal void LoadChildren()
