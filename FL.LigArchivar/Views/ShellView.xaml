@@ -13,6 +13,14 @@
     d:DataContext="{d:DesignInstance Type=vm:ShellViewModel,
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
+    <Window.Resources>
+        <converters:IsValidColorConverter x:Key="IsValidColorConverter" />
+
+        <Style x:Key="ValidTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" />
+        </Style>
+
+    </Window.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="35" />
@@ -51,9 +59,6 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             SelectedItemChanged="RootChildren_SelectedItemChanged">
-            <TreeView.Resources>
-                <converters:IsValidColorConverter x:Key="IsValidColorConverter" />
-            </TreeView.Resources>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItemWithChildren}" ItemsSource="{Binding Children}">
                     <TextBlock Foreground="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" Text="{Binding Name}" />
@@ -68,16 +73,30 @@
             Grid.Column="1"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            AutoGenerateColumns="False">
+            AutoGenerateColumns="False"
+            CanUserSortColumns="False"
+            IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="250"
                     Binding="{Binding Name}"
-                    Header="Name" />
+                    Header="Name">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn
                     Width="100"
                     Binding="{Binding Extensions}"
-                    Header="Erweiterungen" />
+                    Header="Erweiterungen">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <!--  Prefix  -->
