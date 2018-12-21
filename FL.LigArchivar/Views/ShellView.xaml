@@ -55,14 +55,14 @@
                 <converters:IsValidColorConverter x:Key="IsValidColorConverter" />
             </TreeView.Resources>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItem}" ItemsSource="{Binding Children}">
+                <HierarchicalDataTemplate DataType="{x:Type data:ITreeViewItemWithChildren}" ItemsSource="{Binding Children}">
                     <TextBlock Foreground="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" Text="{Binding Name}" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
         <!--  information  -->
         <DataGrid
-            x:Name="Event_Children"
+            x:Name="Event_Files"
             Grid.Row="1"
             Grid.RowSpan="4"
             Grid.Column="1"
