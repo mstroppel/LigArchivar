@@ -30,6 +30,8 @@ namespace FL.LigArchivar.ViewModels.Data
             }
         }
 
+        public bool IsInPictures => _inner.IsInPictures();
+
         public override IImmutableList<ITreeViewItem> Children { get; } = ImmutableList<ITreeViewItem>.Empty;
 
         private IImmutableList<FileListItem> _files = ImmutableList<FileListItem>.Empty;
@@ -52,11 +54,11 @@ namespace FL.LigArchivar.ViewModels.Data
             UpdateFilesFromInner();
         }
 
-        internal void Rename()
+        internal void Rename(bool ignoreWhereNoJPEG)
         {
             try
             {
-                _inner.Rename();
+                _inner.Rename(ignoreWhereNoJPEG);
             }
             catch (Exception e)
             {

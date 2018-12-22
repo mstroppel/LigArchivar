@@ -120,6 +120,8 @@
 
                 </Grid>
             </GroupBox>
+            <!--  exception for JPGs  -->
+            <CheckBox x:Name="IgnoreWhereNoJPEG" Content="Ignoriere Dateiegruppe ohne '.jpg'" />
             <!--  and action  -->
             <Button
                 x:Name="Rename"
