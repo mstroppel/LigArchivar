@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO.Abstractions;
 using System.Linq;
@@ -44,14 +45,20 @@ namespace FL.LigArchivar.Core.Data
             Children = children.ToImmutableList();
         }
 
-        public void Rename()
+        public void Rename(bool ignoreWhereNoJPEG)
         {
             try
             {
                 var localChildren = Children;
                 var number = 1;
 
-                foreach (var child in localChildren.Where(item => !item.IsIgnored))
+                Func<DataFile, bool> predicate = item => !item.IsIgnored;
+                if (ignoreWhereNoJPEG)
+                {
+                    predicate = item => predicate(item) && item.Files.Any(file => file.Extension == "jpg");
+                }
+
+                foreach (var child in localChildren.Where(predicate))
                 {
                     var newName = $"{FilePrefix}{number:000}";
                     child.RenameFiles(newName);

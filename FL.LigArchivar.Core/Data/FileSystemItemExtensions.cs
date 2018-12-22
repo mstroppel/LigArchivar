@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace FL.LigArchivar.Core.Data
 {
-    internal static class FileSystemItemExtensions
+    public static class FileSystemItemExtensions
     {
         public static string GetYear(this IFileSystemItem self)
         {
@@ -63,6 +63,18 @@ namespace FL.LigArchivar.Core.Data
                 child = childWithChildren.GetChild(nextPaths);
 
             return child;
+        }
+
+        public static bool IsInPictures(this IFileSystemItem self)
+        {
+            var asAsset = self as AssetDirectory;
+            if (asAsset != null)
+                return asAsset.IsPicturesDirectory;
+
+            if (self.Parent == null)
+                return false;
+
+            return self.Parent.IsInPictures();
         }
     }
 }

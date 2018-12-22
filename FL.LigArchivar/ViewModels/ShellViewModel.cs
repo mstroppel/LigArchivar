@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using FL.LigArchivar.Core;
+using FL.LigArchivar.Core.Data;
 using FL.LigArchivar.MessageBox;
 using FL.LigArchivar.ViewModels.Data;
 
@@ -93,7 +94,10 @@ namespace FL.LigArchivar.ViewModels
                 {
                     _event = value;
                     if (value != null)
+                    {
                         value.LoadChildren();
+                        IgnoreWhereNoJPEG = value.IsInPictures;
+                    }
 
                     NotifyOfPropertyChange(nameof(Event));
                 }
@@ -120,13 +124,28 @@ namespace FL.LigArchivar.ViewModels
             local.SortByDate();
         }
 
+        public bool IgnoreWhereNoJPEG
+        {
+            get => _ignoreWhereNoJPEG;
+            set
+            {
+                if (_ignoreWhereNoJPEG != value)
+                {
+                    _ignoreWhereNoJPEG = value;
+                    NotifyOfPropertyChange(nameof(IgnoreWhereNoJPEG));
+                }
+            }
+        }
+
+        private bool _ignoreWhereNoJPEG;
+
         public void Rename()
         {
             var local = Event;
             if (local == null)
                 return;
 
-            local.Rename();
+            local.Rename(IgnoreWhereNoJPEG);
         }
 
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)

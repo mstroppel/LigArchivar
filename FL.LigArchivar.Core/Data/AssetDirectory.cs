@@ -16,10 +16,17 @@ namespace FL.LigArchivar.Core.Data
             @"Ton",
             @"Video"
         }.ToImmutableList();
+        private bool _isPicturesDirectory;
 
         private AssetDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
             : base(assetDirectory, assetDirectory.Name, parent, true, TryCreateChild)
         {
+            _isPicturesDirectory = assetDirectory.Name == "Digitalfoto";
+        }
+
+        public bool IsPicturesDirectory
+        {
+            get => _isPicturesDirectory;
         }
 
         public static bool TryCreate(DirectoryInfoBase assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
