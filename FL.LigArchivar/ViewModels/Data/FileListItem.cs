@@ -24,5 +24,7 @@ namespace FL.LigArchivar.ViewModels.Data
         public string Extensions { get; }
 
         public bool IsValid => _inner.IsValid;
+
+        public bool IsLonely => _inner.IsLonely;
     }
 }

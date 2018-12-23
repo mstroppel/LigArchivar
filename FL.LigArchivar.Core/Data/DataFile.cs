@@ -11,7 +11,7 @@ namespace FL.LigArchivar.Core.Data
 {
     public class DataFile
     {
-        private const string LonelyExtension = "dng";
+        private const string LonelyExtension = ".dng";
         private static readonly IImmutableList<string> _ignoredFiles = new string[]
         {
             "Thumbs.db",
@@ -49,8 +49,15 @@ namespace FL.LigArchivar.Core.Data
                 {
                     _files = value;
 
-                    var countLonely = value.Count(item => string.Compare(LonelyExtension, item.Extension, true, CultureInfo.InvariantCulture) == 0);
-                    IsLonely = countLonely == 1;
+                    if (_files.Count == 1)
+                    {
+                        var isLonely = string.Compare(LonelyExtension, _files[0].Extension, true, CultureInfo.InvariantCulture) == 0;
+                        IsLonely = isLonely;
+                    }
+                    else
+                    {
+                        IsLonely = false;
+                    }
                 }
             }
         }
@@ -63,6 +70,15 @@ namespace FL.LigArchivar.Core.Data
                 throw new InvalidOperationException($"Cannot add a file with name '{file.Name}' to the DataFile with name '{Name}'.");
 
             Files = Files.AddRange(file.Files);
+        }
+
+        internal void Delete()
+        {
+            foreach (var file in Files)
+            {
+                _log.Info($"Deleting file '{file.FullName}'.");
+                FileSystemProvider.Instance.File.Delete(file.FullName);
+            }
         }
 
         public void RenameFiles(string newNameWithoutExtension)

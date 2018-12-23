@@ -52,13 +52,20 @@ namespace FL.LigArchivar.Core.Data
                 var localChildren = Children;
                 var number = 1;
 
-                Func<DataFile, bool> predicate = item => !item.IsIgnored && !item.IsLonely;
+                Func<DataFile, bool> predicate = item => !item.IsIgnored;
 
                 foreach (var child in localChildren.Where(predicate))
                 {
-                    var newName = $"{FilePrefix}{number:000}";
-                    child.RenameFiles(newName);
-                    ++number;
+                    if (child.IsLonely)
+                    {
+                        child.Delete();
+                    }
+                    else
+                    {
+                        var newName = $"{FilePrefix}{number:000}";
+                        child.RenameFiles(newName);
+                        ++number;
+                    }
                 }
             }
             finally
