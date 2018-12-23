@@ -45,18 +45,14 @@ namespace FL.LigArchivar.Core.Data
             Children = children.ToImmutableList();
         }
 
-        public void Rename(bool ignoreWhereNoJPEG)
+        public void Rename()
         {
             try
             {
                 var localChildren = Children;
                 var number = 1;
 
-                Func<DataFile, bool> predicate = item => !item.IsIgnored;
-                if (ignoreWhereNoJPEG)
-                {
-                    predicate = item => predicate(item) && item.Files.Any(file => file.Extension == "jpg");
-                }
+                Func<DataFile, bool> predicate = item => !item.IsIgnored && !item.IsLonely;
 
                 foreach (var child in localChildren.Where(predicate))
                 {
