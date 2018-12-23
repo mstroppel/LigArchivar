@@ -54,11 +54,11 @@ namespace FL.LigArchivar.ViewModels.Data
             UpdateFilesFromInner();
         }
 
-        internal void Rename(bool ignoreWhereNoJPEG)
+        internal void Rename()
         {
             try
             {
-                _inner.Rename(ignoreWhereNoJPEG);
+                _inner.Rename();
             }
             catch (Exception e)
             {

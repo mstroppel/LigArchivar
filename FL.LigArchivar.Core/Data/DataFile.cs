@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,10 +11,9 @@ namespace FL.LigArchivar.Core.Data
 {
     public class DataFile
     {
+        private const string LonelyExtension = "dng";
         private static readonly IImmutableList<string> _ignoredFiles = new string[]
         {
-            ".BridgeCache",
-            ".BridgeCacheT",
             "Thumbs.db",
         }.ToImmutableList();
 
@@ -36,9 +36,26 @@ namespace FL.LigArchivar.Core.Data
 
         public bool IsValid { get; }
 
+        public bool IsLonely { get; private set; } = false;
+
         public EventDirectory Parent { get; }
 
-        public IImmutableList<FileInfoBase> Files { get; private set; }
+        public IImmutableList<FileInfoBase> Files
+        {
+            get => _files;
+            private set
+            {
+                if (_files != value)
+                {
+                    _files = value;
+
+                    var countLonely = value.Count(item => string.Compare(LonelyExtension, item.Extension, true, CultureInfo.InvariantCulture) == 0);
+                    IsLonely = countLonely == 1;
+                }
+            }
+        }
+
+        private IImmutableList<FileInfoBase> _files;
 
         public void AddFile(DataFile file)
         {

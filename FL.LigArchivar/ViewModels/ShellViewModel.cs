@@ -96,7 +96,6 @@ namespace FL.LigArchivar.ViewModels
                     if (value != null)
                     {
                         value.LoadChildren();
-                        IgnoreWhereNoJPEG = value.IsInPictures;
                     }
 
                     NotifyOfPropertyChange(nameof(Event));
@@ -124,28 +123,13 @@ namespace FL.LigArchivar.ViewModels
             local.SortByDate();
         }
 
-        public bool IgnoreWhereNoJPEG
-        {
-            get => _ignoreWhereNoJPEG;
-            set
-            {
-                if (_ignoreWhereNoJPEG != value)
-                {
-                    _ignoreWhereNoJPEG = value;
-                    NotifyOfPropertyChange(nameof(IgnoreWhereNoJPEG));
-                }
-            }
-        }
-
-        private bool _ignoreWhereNoJPEG;
-
         public void Rename()
         {
             var local = Event;
             if (local == null)
                 return;
 
-            local.Rename(IgnoreWhereNoJPEG);
+            local.Rename();
         }
 
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
