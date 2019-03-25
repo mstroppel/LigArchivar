@@ -79,6 +79,7 @@ namespace FL.LigArchivar.ViewModels
                     NotifyOfPropertyChange(nameof(SelectedItem));
                     var asEvent = value as EventTreeViewItem;
                     Event = asEvent;
+                    StartNumber = 1;
                 }
             }
         }
@@ -123,13 +124,28 @@ namespace FL.LigArchivar.ViewModels
             local.SortByDate();
         }
 
+        public int StartNumber
+        {
+            get => _startNumber;
+            set
+            {
+                if (_startNumber != value)
+                {
+                    _startNumber = value;
+                    NotifyOfPropertyChange(nameof(StartNumber));
+                }
+            }
+        }
+
+        private int _startNumber = 1;
+
         public void Rename()
         {
             var local = Event;
             if (local == null)
                 return;
 
-            local.Rename();
+            local.Rename(StartNumber);
         }
 
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)

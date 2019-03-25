@@ -130,6 +130,9 @@
 
                 </Grid>
             </GroupBox>
+            <!--  manually set start number  -->
+            <TextBlock Margin="5" Text="Startnummer" />
+            <TextBox x:Name="StartNumber" Margin="5" />
             <!--  and action  -->
             <Button
                 x:Name="Rename"

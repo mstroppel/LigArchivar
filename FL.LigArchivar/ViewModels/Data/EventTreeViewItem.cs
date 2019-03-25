@@ -54,11 +54,11 @@ namespace FL.LigArchivar.ViewModels.Data
             UpdateFilesFromInner();
         }
 
-        internal void Rename()
+        internal void Rename(int startNumber)
         {
             try
             {
-                _inner.Rename();
+                _inner.Rename(startNumber);
             }
             catch (Exception e)
             {

@@ -45,12 +45,12 @@ namespace FL.LigArchivar.Core.Data
             Children = children.ToImmutableList();
         }
 
-        public void Rename()
+        public void Rename(int startNumber)
         {
             try
             {
                 var localChildren = Children;
-                var number = 1;
+                var number = startNumber;
 
                 Func<DataFile, bool> predicate = item => !item.IsIgnored;
 
