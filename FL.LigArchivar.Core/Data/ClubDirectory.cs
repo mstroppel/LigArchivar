@@ -21,6 +21,7 @@ namespace FL.LigArchivar.Core.Data
             @"M-Musikverein",
             @"N-Narrenzunft",
             @"P-Personen_und_Begebenheiten",
+            @"R-Fischerverein",
             @"S-Schuetzenverein",
             @"T-TSV",
             @"V-Ansichten",
