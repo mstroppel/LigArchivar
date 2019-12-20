@@ -10,7 +10,7 @@ namespace FL.LigArchivar.Core.Data
 {
     public class EventDirectory : IFileSystemItem
     {
-        public EventDirectory(DirectoryInfoBase directory, IFileSystemItem parent, bool isValid, string clubChar, string year, string month, string day, string eventName)
+        private EventDirectory(DirectoryInfoBase directory, IFileSystemItem parent, bool isValid, string clubChar, string year, string month, string day, string eventName)
         {
             Name = directory.Name;
             Directory = directory;
