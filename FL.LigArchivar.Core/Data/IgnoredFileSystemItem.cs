@@ -6,7 +6,7 @@ namespace FL.LigArchivar.Core.Data
     {
         private const string IgnoredPrefix = "<ignored>";
 
-        public IgnoredFileSystemItem(DirectoryInfoBase directory, IFileSystemItem parent)
+        public IgnoredFileSystemItem(IDirectoryInfo directory, IFileSystemItem parent)
             : base(directory, IgnoredPrefix + directory.Name, parent, true)
         {
         }

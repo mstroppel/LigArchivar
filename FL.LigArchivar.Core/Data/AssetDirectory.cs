@@ -18,7 +18,7 @@ namespace FL.LigArchivar.Core.Data
         }.ToImmutableList();
         private bool _isPicturesDirectory;
 
-        private AssetDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
+        private AssetDirectory(IDirectoryInfo assetDirectory, IFileSystemItem parent)
             : base(assetDirectory, assetDirectory.Name, parent, true, TryCreateChild)
         {
             _isPicturesDirectory = assetDirectory.Name == "Digitalfoto";
@@ -29,7 +29,7 @@ namespace FL.LigArchivar.Core.Data
             get => _isPicturesDirectory;
         }
 
-        public static bool TryCreate(DirectoryInfoBase assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(IDirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 
@@ -45,7 +45,7 @@ namespace FL.LigArchivar.Core.Data
             return true;
         }
 
-        private static bool TryCreateChild(DirectoryInfoBase directory, IFileSystemItem parent, out IFileSystemItem fileSystemItem)
+        private static bool TryCreateChild(IDirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem fileSystemItem)
         {
             var isYear = YearDirectory.TryCreate(directory, parent, out fileSystemItem);
             if (isYear)

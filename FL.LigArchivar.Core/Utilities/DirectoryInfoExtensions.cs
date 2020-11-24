@@ -6,11 +6,11 @@ using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.Core.Utilities
 {
-    public delegate bool TryCreateFileSystemItem(DirectoryInfoBase directory, IFileSystemItem parent, out IFileSystemItem item);
+    public delegate bool TryCreateFileSystemItem(IDirectoryInfo directory, IFileSystemItem parent, out IFileSystemItem item);
 
     public static class DirectoryInfoExtensions
     {
-        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this DirectoryInfoBase self, IFileSystemItem parent, TryCreateFileSystemItem tryCreateChild)
+        public static IImmutableList<IFileSystemItem> GetChildrenFileSystemItems(this IDirectoryInfo self, IFileSystemItem parent, TryCreateFileSystemItem tryCreateChild)
         {
             var items = new List<IFileSystemItem>();
 

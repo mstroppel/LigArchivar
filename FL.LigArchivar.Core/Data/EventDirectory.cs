@@ -10,7 +10,7 @@ namespace FL.LigArchivar.Core.Data
 {
     public class EventDirectory : IFileSystemItem
     {
-        private EventDirectory(DirectoryInfoBase directory, IFileSystemItem parent, bool isValid, string clubChar, string year, string month, string day, string eventName)
+        private EventDirectory(IDirectoryInfo directory, IFileSystemItem parent, bool isValid, string clubChar, string year, string month, string day, string eventName)
         {
             Name = directory.Name;
             Directory = directory;
@@ -90,7 +90,7 @@ namespace FL.LigArchivar.Core.Data
 
         public IFileSystemItem Parent { get; }
 
-        public DirectoryInfoBase Directory { get; }
+        public IDirectoryInfo Directory { get; }
 
         public string ClubChar { get; }
 
@@ -106,7 +106,7 @@ namespace FL.LigArchivar.Core.Data
 
         public IImmutableList<DataFile> Children { get; private set; }
 
-        public static bool TryCreate(DirectoryInfoBase eventDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(IDirectoryInfo eventDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 

@@ -10,7 +10,7 @@ namespace FL.LigArchivar.Core.Data
     {
         private readonly bool _itemItselfIsValid;
 
-        public FileSystemItemBase(DirectoryInfoBase directory, string name, IFileSystemItem parent, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
+        public FileSystemItemBase(IDirectoryInfo directory, string name, IFileSystemItem parent, bool isValid, TryCreateFileSystemItem tryCreateChild = null)
         {
             Directory = directory;
             Name = name;
@@ -29,7 +29,7 @@ namespace FL.LigArchivar.Core.Data
             UpdateIsValid();
         }
 
-        public DirectoryInfoBase Directory { get; }
+        public IDirectoryInfo Directory { get; }
 
         public string Name { get; }
 

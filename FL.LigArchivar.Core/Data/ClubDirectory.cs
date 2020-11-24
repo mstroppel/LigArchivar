@@ -29,12 +29,12 @@ namespace FL.LigArchivar.Core.Data
             @"Z-Kegler"
         }.ToImmutableList();
 
-        private ClubDirectory(DirectoryInfoBase assetDirectory, IFileSystemItem parent)
+        private ClubDirectory(IDirectoryInfo assetDirectory, IFileSystemItem parent)
             : base(assetDirectory, assetDirectory.Name, parent, true, EventDirectory.TryCreate)
         {
         }
 
-        public static bool TryCreate(DirectoryInfoBase assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(IDirectoryInfo assetDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
 

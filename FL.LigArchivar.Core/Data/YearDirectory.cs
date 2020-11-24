@@ -4,12 +4,12 @@ namespace FL.LigArchivar.Core.Data
 {
     public class YearDirectory : FileSystemItemBase
     {
-        private YearDirectory(DirectoryInfoBase yearDirectory, IFileSystemItem parent)
+        private YearDirectory(IDirectoryInfo yearDirectory, IFileSystemItem parent)
             : base(yearDirectory, yearDirectory.Name, parent, true, ClubDirectory.TryCreate)
         {
         }
 
-        public static bool TryCreate(DirectoryInfoBase yearDirectory, IFileSystemItem parent, out IFileSystemItem directory)
+        public static bool TryCreate(IDirectoryInfo yearDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
             directory = null;
             var name = yearDirectory.Name;

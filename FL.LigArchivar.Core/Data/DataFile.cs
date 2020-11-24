@@ -19,7 +19,7 @@ namespace FL.LigArchivar.Core.Data
 
         private static readonly ILog _log = LogManager.GetLog(typeof(EventDirectory));
 
-        public DataFile(FileInfoBase file, EventDirectory parent)
+        public DataFile(IFileInfo file, EventDirectory parent)
         {
             var name = FileSystemProvider.Instance.Path.GetFileNameWithoutExtension(file.FullName);
             Name = name;
@@ -27,7 +27,7 @@ namespace FL.LigArchivar.Core.Data
             IsValid = GetIsValid(name, parent);
             Parent = parent;
 
-            Files = new FileInfoBase[] { file }.ToImmutableList();
+            Files = new IFileInfo[] { file }.ToImmutableList();
         }
 
         public string Name { get; }
@@ -40,7 +40,7 @@ namespace FL.LigArchivar.Core.Data
 
         public EventDirectory Parent { get; }
 
-        public IImmutableList<FileInfoBase> Files
+        public IImmutableList<IFileInfo> Files
         {
             get => _files;
             private set
@@ -62,7 +62,7 @@ namespace FL.LigArchivar.Core.Data
             }
         }
 
-        private IImmutableList<FileInfoBase> _files;
+        private IImmutableList<IFileInfo> _files;
 
         public void AddFile(DataFile file)
         {

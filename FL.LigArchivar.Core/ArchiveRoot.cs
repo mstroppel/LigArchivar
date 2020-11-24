@@ -9,7 +9,7 @@ namespace FL.LigArchivar.Core
     public class ArchiveRoot : IFileSystemItemWithChildren
     {
         private readonly string _directoryPath;
-        private readonly DirectoryInfoBase _directoryInfo;
+        private readonly IDirectoryInfo _directoryInfo;
 
         private ArchiveRoot(string archiveRootDirectoryPath)
         {
