@@ -37,6 +37,11 @@ namespace FL.LigArchivar.ViewModels
 
         private string _rootDirectory;
 
+        public void Reload()
+        {
+            OnRootDirectoryChanged(RootDirectory);
+        }
+
         private ArchiveRootTreeViewItem Root
         {
             get => _root;
