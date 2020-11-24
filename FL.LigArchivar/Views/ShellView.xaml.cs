@@ -25,8 +25,10 @@ namespace FL.LigArchivar.Views
         /// <param name="e">The <see cref="System.Windows.RoutedEventArgs"/> instance containing the event data.</param>
         private void BrowseRootDirectory_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var dialog = new WPFFolderBrowserDialog();
-            dialog.InitialDirectory = RootDirectory.Text;
+            using var dialog = new WPFFolderBrowserDialog
+            {
+                InitialDirectory = RootDirectory.Text,
+            };
 
             var result = dialog.ShowDialog();
             if (result == false)

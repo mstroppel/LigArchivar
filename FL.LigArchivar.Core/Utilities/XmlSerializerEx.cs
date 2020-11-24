@@ -1,7 +1,9 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Security;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace FL.LigArchivar.Core.Utilities
@@ -35,17 +37,17 @@ namespace FL.LigArchivar.Core.Utilities
             {
                 // Try to open existing file with default deserialization.
                 using (Stream stream = FileSystemProvider.Instance.FileStream.Create(filePath, FileMode.Open))
-                using (StreamReader sr = new StreamReader(stream, Encoding.UTF8, true))
+                using (XmlReader reader = XmlReader.Create(stream))
                 {
                     var serializer = new XmlSerializer(typeof(T));
-                    readObject = serializer.Deserialize(sr) as T;
+                    readObject = serializer.Deserialize(reader) as T;
                 }
             }
             catch (FileNotFoundException e)
             {
                 throw new FileNotFoundException(_fileNotFoundMessage, filePath, e);
             }
-            catch
+            catch (Exception)
             {
                 // On all other exceptions we will try the tolerant XML reader.
             }
@@ -59,7 +61,7 @@ namespace FL.LigArchivar.Core.Utilities
             try
             {
                 using (Stream stream = FileSystemProvider.Instance.FileStream.Create(filePath, FileMode.Open))
-                using (StreamReader sr = new StreamReader(stream, Encoding.UTF8, true))
+                using (XmlReader sr = XmlReader.Create(stream))
                 {
                     var serializer = new XmlSerializer(typeof(T));
                     return serializer.Deserialize(sr) as T;
@@ -69,9 +71,9 @@ namespace FL.LigArchivar.Core.Utilities
             {
                 throw new SecurityException(string.Format(CultureInfo.InvariantCulture, _notAccessMessage, filePath), e);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                throw new System.Exception(string.Format(CultureInfo.InvariantCulture, _cannotReadMessage, filePath), ex);
+                throw new Exception(string.Format(CultureInfo.InvariantCulture, _cannotReadMessage, filePath), ex);
             }
         }
 
@@ -104,9 +106,9 @@ namespace FL.LigArchivar.Core.Utilities
             {
                 throw new SecurityException(string.Format(CultureInfo.InvariantCulture, _notAccessMessage, filePath), e);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                throw new System.Exception(string.Format(CultureInfo.InvariantCulture, _cannotSaveMessage, filePath), e);
+                throw new Exception(string.Format(CultureInfo.InvariantCulture, _cannotSaveMessage, filePath), e);
             }
         }
     }

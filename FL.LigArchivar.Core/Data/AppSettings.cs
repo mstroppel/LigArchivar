@@ -132,7 +132,7 @@ namespace FL.LigArchivar.Core.Data
         /// </summary>
         /// <param name="path">The path. If <c>null</c> the path <see cref="AppSettingsPath"/>
         /// will be used.</param>
-        /// <exception cref="System.InvalidOperationException">No path provided and application settings not loaded from a file</exception>
+        /// <exception cref="System.InvalidOperationException">No path provided and application settings not loaded from a file.</exception>
         public void Save(string path = null)
         {
             if (path == null)
@@ -156,8 +156,8 @@ namespace FL.LigArchivar.Core.Data
                 {
                     @".jpg",
                     @".dng",
-                    @".mts"
-                })
+                    @".mts",
+                }),
             };
 
             return instance;

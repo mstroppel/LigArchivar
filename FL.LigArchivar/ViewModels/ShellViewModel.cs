@@ -59,7 +59,7 @@ namespace FL.LigArchivar.ViewModels
             }
         }
 
-        private ArchiveRootTreeViewItem _root = null;
+        private ArchiveRootTreeViewItem _root;
 
         public IImmutableList<ITreeViewItem> RootChildren
         {

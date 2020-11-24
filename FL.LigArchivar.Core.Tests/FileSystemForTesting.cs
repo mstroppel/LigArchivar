@@ -13,7 +13,7 @@ namespace FL.LigArchivar.Core.Tests
                 { @"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung\A_2018-05-01_002.jpg", new MockFileData(string.Empty) },
                 { @"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung\A_2018-05-01_003.jpg", new MockFileData(string.Empty) },
                 { @"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung\A_2018-05-01_004.jpg", new MockFileData(string.Empty) },
-                { @"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung\A_2018-05-01_005.jpg", new MockFileData(string.Empty) }
+                { @"Digitalfoto\2018\A-Albverein\A_2018-05-01_Maiwanderung\A_2018-05-01_005.jpg", new MockFileData(string.Empty) },
             },
             @"C:\archiv");
 

@@ -36,7 +36,7 @@ namespace FL.LigArchivar.Core.Data
 
         public bool IsValid { get; }
 
-        public bool IsLonely { get; private set; } = false;
+        public bool IsLonely { get; private set; }
 
         public EventDirectory Parent { get; }
 

@@ -26,7 +26,7 @@ namespace FL.LigArchivar.Core.Data
             @"T-TSV",
             @"V-Ansichten",
             @"W-Feuerwehr",
-            @"Z-Kegler"
+            @"Z-Kegler",
         }.ToImmutableList();
 
         private ClubDirectory(IDirectoryInfo assetDirectory, IFileSystemItem parent)

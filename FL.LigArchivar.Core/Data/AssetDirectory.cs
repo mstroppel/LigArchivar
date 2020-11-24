@@ -14,7 +14,7 @@ namespace FL.LigArchivar.Core.Data
         {
             @"Digitalfoto",
             @"Ton",
-            @"Video"
+            @"Video",
         }.ToImmutableList();
         private bool _isPicturesDirectory;
 
