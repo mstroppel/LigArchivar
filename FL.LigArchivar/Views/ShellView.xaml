@@ -98,6 +98,16 @@
                 </DataGridTextColumn>
                 <DataGridTextColumn
                     Width="100"
+                    Binding="{Binding Properties}"
+                    Header="Eigenschaften">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{Binding IsValid, Mode=OneWay, Converter={StaticResource IsValidColorConverter}}" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn
+                    Width="100"
                     Binding="{Binding IsLonely}"
                     Header="Einsam">
                     <DataGridTextColumn.ElementStyle>

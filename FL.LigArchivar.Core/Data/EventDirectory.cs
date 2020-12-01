@@ -24,22 +24,27 @@ namespace FL.LigArchivar.Core.Data
 
             FilePrefix = clubChar + "_" + year + "-" + month + "-" + day + "_";
 
-            Children = ImmutableList<DataFile>.Empty;
+            Children = ImmutableList<DataFiles>.Empty;
         }
 
         public void LoadChildren()
         {
             var files = Directory.GetFiles();
-            var children = new List<DataFile>();
+            var children = new List<DataFiles>();
 
             foreach (var file in files)
             {
-                var instance = new DataFile(file, this);
+                var instance = new DataFile(file);
                 var existing = children.FirstOrDefault(item => item.Name == instance.Name);
                 if (existing == null)
-                    children.Add(instance);
+                {
+                    var dataFiles = new DataFiles(instance, this);
+                    children.Add(dataFiles);
+                }
                 else
+                {
                     existing.AddFile(instance);
+                }
             }
 
             Children = children.ToImmutableList();
@@ -52,7 +57,7 @@ namespace FL.LigArchivar.Core.Data
                 var localChildren = Children;
                 var number = startNumber;
 
-                Func<DataFile, bool> predicate = item => !item.IsIgnored;
+                Func<DataFiles, bool> predicate = item => !item.IsIgnored;
 
                 foreach (var child in localChildren.Where(predicate))
                 {
@@ -104,7 +109,7 @@ namespace FL.LigArchivar.Core.Data
 
         public string FilePrefix { get; }
 
-        public IImmutableList<DataFile> Children { get; private set; }
+        public IImmutableList<DataFiles> Children { get; private set; }
 
         public static bool TryCreate(IDirectoryInfo eventDirectory, IFileSystemItem parent, out IFileSystemItem directory)
         {
