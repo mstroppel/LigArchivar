@@ -106,6 +106,34 @@ namespace FL.LigArchivar.Core.Data
             }
         }
 
+        internal void RenameFilesToFileDateTime()
+        {
+            var fileForDateTime = GetFileForDateTime();
+            var fileName = fileForDateTime.LastWriteTimeUtc.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
+
+            foreach (var file in Files)
+            {
+                var directory = file.Directory.FullName;
+
+                var newPath = FileSystemProvider.Instance.Path.Combine(directory, fileName);
+
+                if (newPath == file.FullName)
+                    continue;
+
+                if (FileSystemProvider.Instance.File.Exists(newPath))
+                {
+                    var message = "Kann die Datei nicht umbenennen, da eine Datei mit dem Zielnamen schon existiert. Wurde im Ordner schon einmal umbenannt? Bitte händisch korrigieren." + Environment.NewLine +
+                        $"  Quelldatei: {file.Name}" + Environment.NewLine +
+                        $"  Zieldatei: {fileName} (existiert bereits)";
+                    var exception = new RenameException(message);
+                    throw exception;
+                }
+
+                _log.Info($"Moving '{file.FullName}' to '{newPath}'.");
+                file.MoveTo(newPath);
+            }
+        }
+
         private static bool GetIsValid(string name, EventDirectory parent)
         {
             var regex = new Regex(Patterns.DataFile);
@@ -134,6 +162,23 @@ namespace FL.LigArchivar.Core.Data
                 return false;
 
             return true;
+        }
+
+        private DataFile GetFileForDateTime()
+        {
+            var file = Files.FirstOrDefault(item => item.Extension == "jpg");
+            if (file != null)
+                return file;
+
+            file = Files.FirstOrDefault(item => item.Extension == "mp3");
+            if (file != null)
+                return file;
+
+            file = Files.FirstOrDefault(item => item.Extension == "mts");
+            if (file != null)
+                return file;
+
+            return Files.ElementAtOrDefault(0);
         }
     }
 }

@@ -79,6 +79,32 @@ namespace FL.LigArchivar.Core.Data
             }
         }
 
+        public void RenameToFileDateTime()
+        {
+            try
+            {
+                var localChildren = Children;
+
+                Func<DataFiles, bool> predicate = item => !item.IsIgnored;
+
+                foreach (var child in localChildren.Where(predicate))
+                {
+                    if (child.IsLonely)
+                    {
+                        child.Delete();
+                    }
+                    else
+                    {
+                        child.RenameFilesToFileDateTime();
+                    }
+                }
+            }
+            finally
+            {
+                LoadChildren();
+            }
+        }
+
         public void SortByName()
         {
             Children = Children.OrderBy(item => item.Name).ToImmutableList();

@@ -59,9 +59,19 @@ namespace FL.LigArchivar.ViewModels.Data
 
         internal void Rename(int startNumber)
         {
+            ExecuteAction(() => _inner.Rename(startNumber));
+        }
+
+        internal void RenameToFileDateTime()
+        {
+            ExecuteAction(() => _inner.RenameToFileDateTime());
+        }
+
+        private void ExecuteAction(System.Action action)
+        {
             try
             {
-                _inner.Rename(startNumber);
+                action();
             }
             catch (RenameException renameException)
             {

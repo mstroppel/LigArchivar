@@ -159,6 +159,11 @@
                 Margin="5"
                 HorizontalAlignment="Stretch"
                 Content="Umbenennen" />
+            <Button
+                x:Name="RenameToFileDateTime"
+                Margin="5"
+                HorizontalAlignment="Stretch"
+                Content="Umbenennen nach Datum und Zeit" />
         </StackPanel>
     </Grid>
 </Window>

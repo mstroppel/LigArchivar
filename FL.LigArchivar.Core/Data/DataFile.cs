@@ -44,7 +44,7 @@ namespace FL.LigArchivar.Core.Data
         public string NameWithExtension => _inner.Name;
         public string FullName => _inner.FullName;
         public IDirectoryInfo Directory => _inner.Directory;
-        public object LastWriteTimeUtc => _inner.LastWriteTimeUtc;
+        public DateTime LastWriteTimeUtc => _inner.LastWriteTimeUtc;
 
         public void MoveTo(string destFileName)
         {

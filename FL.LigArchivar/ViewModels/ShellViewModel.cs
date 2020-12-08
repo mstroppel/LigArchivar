@@ -153,6 +153,15 @@ namespace FL.LigArchivar.ViewModels
             local.Rename(StartNumber);
         }
 
+        public void RenameToFileDateTime()
+        {
+            var local = Event;
+            if (local == null)
+                return;
+
+            local.RenameToFileDateTime();
+        }
+
         private static ArchiveRoot GetArchiveRoot(string rootDirectoryPath)
         {
             if (ArchiveRoot.TryCreate(rootDirectoryPath, out var root))
