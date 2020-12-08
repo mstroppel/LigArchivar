@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+using Caliburn.Micro;
 using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
 {
     public class EventTreeViewItem : TreeViewItemBase
     {
+        private static readonly ILog _log = LogManager.GetLog(typeof(TreeViewItemBase));
         private readonly EventDirectory _inner;
 
         public EventTreeViewItem(EventDirectory inner, ITreeViewItem parent)
@@ -62,6 +64,8 @@ namespace FL.LigArchivar.ViewModels.Data
             }
             catch (Exception e)
             {
+                _log.Error(e);
+
                 var root = GetRoot();
                 if (root == null)
                     return;
