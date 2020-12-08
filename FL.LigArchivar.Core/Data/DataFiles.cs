@@ -92,6 +92,15 @@ namespace FL.LigArchivar.Core.Data
                 if (newPath == file.FullName)
                     continue;
 
+                if (FileSystemProvider.Instance.File.Exists(newPath))
+                {
+                    var message = "Kann die Datei nicht umbenennen, da eine Datei mit dem Zielnamen schon existiert. Wurde im Ordner schon einmal umbenannt? Bitte händisch korrigieren." + Environment.NewLine +
+                        $"  Quelldatei: {file.Name}" + Environment.NewLine +
+                        $"  Zieldatei: {fileName} (existiert bereits)";
+                    var exception = new RenameException(message);
+                    throw exception;
+                }
+
                 _log.Info($"Moving '{file.FullName}' to '{newPath}'.");
                 file.MoveTo(newPath);
             }

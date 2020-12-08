@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using Caliburn.Micro;
+using FL.LigArchivar.Core;
 using FL.LigArchivar.Core.Data;
 
 namespace FL.LigArchivar.ViewModels.Data
@@ -61,6 +62,16 @@ namespace FL.LigArchivar.ViewModels.Data
             try
             {
                 _inner.Rename(startNumber);
+            }
+            catch (RenameException renameException)
+            {
+                _log.Error(renameException);
+
+                var root = GetRoot();
+                if (root == null)
+                    return;
+
+                root.MessageBox.ShowErrorMessage("Fehler beim Umbenennen", renameException.Message);
             }
             catch (Exception e)
             {

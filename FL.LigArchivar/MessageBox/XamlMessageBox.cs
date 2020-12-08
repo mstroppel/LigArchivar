@@ -7,15 +7,22 @@ namespace FL.LigArchivar.MessageBox
     /// </summary>
     public class XamlMessageBox : IMessageBox
     {
-        /// <summary>
-        /// Shows an exception.
-        /// </summary>
-        /// <param name="e">The exception.</param>
-        public void ShowException(System.Exception e)
+        public void ShowException(Exception e)
         {
             System.Windows.MessageBox.Show(
-                "Fehler: " + e.Message + Environment.NewLine + "Stacktrace: " + e.StackTrace,
+                $"Fehler: {e.Message} ({e.GetType().FullName})" + Environment.NewLine +
+                $"Stacktrace: {e.StackTrace}",
                 "Fehler",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error,
+                System.Windows.MessageBoxResult.OK);
+        }
+
+        public void ShowErrorMessage(string title, string message)
+        {
+            System.Windows.MessageBox.Show(
+                message,
+                title,
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Error,
                 System.Windows.MessageBoxResult.OK);
