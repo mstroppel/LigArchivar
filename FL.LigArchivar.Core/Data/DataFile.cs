@@ -10,6 +10,7 @@ namespace FL.LigArchivar.Core.Data
         {
             "_-6dB",
             "_-12dB",
+            "_bearbeitet",
         }.ToImmutableList();
 
         private readonly IFileInfo _inner;
