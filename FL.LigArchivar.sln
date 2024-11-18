@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FL.LigArchivar", "FL.LigArchivar\FL.LigArchivar.csproj", "{0661F591-EDF7-4485-90C4-FE33E1D0103C}"
 EndProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildSupport", "BuildSuppor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FL.LigArchivar.Core", "FL.LigArchivar.Core\FL.LigArchivar.Core.csproj", "{8821F860-4FC4-4F9D-88F1-858EE6A8605C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FL.LigArchivar.Core.Tests", "FL.LigArchivar.Core.Tests\FL.LigArchivar.Core.Tests.csproj", "{40474F40-199D-4B05-890B-BFBE16AF0F12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FL.LigArchivar.Core.Tests", "FL.LigArchivar.Core.Tests\FL.LigArchivar.Core.Tests.csproj", "{40474F40-199D-4B05-890B-BFBE16AF0F12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
