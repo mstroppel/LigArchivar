@@ -70,9 +70,8 @@ should be addressed before building the web layer on top of it.
 
 **Actions:**
 
-- Replace `PropertyChangedBase` in `AppSettings` with a plain implementation of
-  `INotifyPropertyChanged` or remove change notification entirely (settings are loaded
-  once, not live-bound in a web context).
+- Remove `PropertyChangedBase` from `AppSettings` entirely — change notification is not
+  needed in a web context where settings are loaded once at startup, not live-bound to UI.
 - Replace `Caliburn.Micro` logging with `Microsoft.Extensions.Logging.ILogger<T>` injected
   via DI.
 - Remove the `Caliburn.Micro.Core` NuGet reference from the Core project.
@@ -127,35 +126,12 @@ Straightforward choice. Minimal API or controller-based — controller-based is 
 here since the API surface is well-defined and grouping by resource (archive tree, events,
 files) maps naturally to controllers.
 
-### 3.2 Frontend: React.js vs Next.js
+### 3.2 Frontend: React.js with Vite
 
-| Aspect | React.js (Vite + React) | Next.js |
-|---|---|---|
-| **What it is** | Client-side SPA library | Full-stack React framework (SSR, SSG, API routes) |
-| **Rendering** | Client-side only (SPA) | Server-side, static, or client — per page |
-| **Hosting** | Static files served by the .NET backend or nginx | Requires its own Node.js server process |
-| **Docker complexity** | Simple: build once, serve static files from the .NET container | Needs a second container or Node.js process alongside .NET |
-| **SEO** | Not relevant (internal tool) | Not relevant (internal tool) |
-| **API layer** | Calls the .NET API via fetch | Could use its own API routes — but that duplicates the .NET API, adding confusion |
-| **Bundle size** | Small, fast to load | Larger framework overhead |
-| **Learning curve** | Lower — just React + Vite | Higher — file-based routing, server components, middleware |
-| **State management** | Full control (React Query, Zustand, etc.) | Same options, but SSR adds hydration complexity |
+Client-side SPA. Builds to static files served directly by the ASP.NET backend
+(via `UseStaticFiles`), keeping deployment to a single container.
 
-**Recommendation: React.js with Vite.**
-
-Reasons:
-
-- This is an internal tool with a single-page UI (tree view + file list + actions). There
-  is no need for SSR, SSG, or file-based routing.
-- Next.js would add a second runtime (Node.js) to the Docker container, increasing
-  complexity for no benefit.
-- With Vite + React, the frontend builds to static files that can be served directly by
-  the ASP.NET backend (via `UseStaticFiles` or a reverse proxy), keeping the deployment to
-  a single container.
-- Next.js API routes would create an awkward overlap with the .NET API — either you
-  duplicate logic or proxy everything through, which is pointless.
-
-**Frontend tooling:**
+**Tooling:**
 
 - **Vite** — build tool and dev server
 - **React 19** — UI library
