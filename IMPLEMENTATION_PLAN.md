@@ -395,7 +395,7 @@ application renames and deletes files.
 | 1.2 | Replace `FileSystemProvider` static with DI | Constructor-inject `IFileSystem` everywhere |
 | 1.3 | Retarget to .NET 10 | Update `.csproj` files, update NuGet packages |
 | 1.4 | Add async support | Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async |
-| 1.5 | Update tests | Retarget to .NET 10, update NUnit, fix tests after refactoring |
+| 1.5 | Update tests | Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring |
 | 1.6 | Verify all tests pass | Green test suite before proceeding |
 
 ### Phase 2: Build API (estimated: 4–5 days)
