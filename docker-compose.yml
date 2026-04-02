@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ligarchivar:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - /path/to/archive:/archive:rw
+    environment:
+      - ARCHIVE_ROOT=/archive
+      - AUTH_USERNAME=admin
+      - AUTH_PASSWORD=changeme
+    restart: unless-stopped

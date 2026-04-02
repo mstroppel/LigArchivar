@@ -1,0 +1,60 @@
+name: Deploy FL.LigArchivar
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        
+    - name: Restore backend dependencies
+      run: |
+        dotnet restore src/backend/FL.LigArchivar.sln
+        
+    - name: Build backend
+      run: |
+        dotnet build src/backend/FL.LigArchivar.Api/FL.LigArchivar.Api.csproj -c Release
+        
+    - name: Test backend
+      run: |
+        dotnet test src/backend/FL.LigArchivar.Core.Tests/FL.LigArchivar.Core.Tests.csproj -c Release
+        
+    - name: Build frontend
+      run: |
+        cd src/frontend
+        npm ci
+        npm run build
+        
+    - name: Build Docker image
+      run: |
+        docker build -t ligarchivar:${{ github.sha }} .
+        
+    - name: Run integration tests (if needed)
+      run: |
+        echo "Integration tests would run here"
+        
+    - name: Push to registry (optional for demo purposes)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Image built successfully - ready for deployment"
+        
+    - name: Deploy to production (placeholder)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Deployment to production would happen here using docker-compose or k8s"
