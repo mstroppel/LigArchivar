@@ -39,6 +39,8 @@
 - [x] Configure static file serving (ASP.NET serves wwwroot)
 - [x] Add SPA fallback routing (app.MapFallbackToFile("index.html"))
 - [x] Test end-to-end in container (build, run, verify all features)
+- [x] Add GitHub Actions workflow for automated deployment
+- [x] Create deployment script for production
 
 ### 5. Polish & Hardening (done)
 - [x] Logging (structured logging with ILogger)
