@@ -1,4 +1,6 @@
 <Solution>
-  <Project Path="FL.LigArchivar.Core.Tests/FL.LigArchivar.Core.Tests.csproj" />
   <Project Path="FL.LigArchivar.Core/FL.LigArchivar.Core.csproj" />
+  <Project Path="FL.LigArchivar.Core.Tests/FL.LigArchivar.Core.Tests.csproj" />
+  <Project Path="FL.LigArchivar.Api/FL.LigArchivar.Api.csproj" />
+  <Project Path="FL.LigArchivar.Api.Tests/FL.LigArchivar.Api.Tests.csproj" />
 </Solution>
