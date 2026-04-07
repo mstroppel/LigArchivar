@@ -149,7 +149,7 @@ Client-side SPA. Builds to static files served directly by the ASP.NET backend
 FL.LigArchivar/
 ├── src/
 │   ├── backend/
-│   │   ├── FL.LigArchivar.sln
+│   │   ├── FL.LigArchivar.slnx
 │   │   ├── FL.LigArchivar.Core/           # Domain logic (retargeted to net10.0)
 │   │   │   ├── FL.LigArchivar.Core.csproj
 │   │   │   ├── ArchiveRoot.cs
@@ -374,7 +374,7 @@ application renames and deletes files.
 
 ### Phase 2: Build API (estimated: 4–5 days)
 
-- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core
+- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
 - [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
 - [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
 - [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
