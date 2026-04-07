@@ -258,16 +258,15 @@ GET  /api/events/{path}
 
 POST /api/events/{path}/rename
      Sequential rename. Acquires write lock.
-     Body: { "startNumber": 1 }
+     Body: { "startNumber": 1, "fileOrder": ["A_2018-05-01_003", "A_2018-05-01_001"] }
+     fileOrder is optional. If omitted, the backend uses its natural (filesystem) order.
+     If provided, files are renamed in the given order — enabling any client-side sorting
+     or custom drag-and-drop reordering without additional API changes.
      Response: EventDetailDto (refreshed file list)
 
 POST /api/events/{path}/rename-by-datetime
      DateTime-based rename. Acquires write lock.
      Response: EventDetailDto
-
-POST /api/events/{path}/sort
-     Body: { "sortBy": "name" | "date" }
-     Response: EventDetailDto (re-sorted file list)
 ```
 
 ### 5.4 DTO Examples
@@ -298,8 +297,12 @@ public record FileGroupDto(
     bool IsLonely
 );
 
-public record RenameRequestDto(int StartNumber);
+public record RenameRequestDto(int StartNumber, string[]? FileOrder = null);
 ```
+
+`FileOrder` contains file base names (without extensions) in the desired rename sequence.
+The backend looks up each name in the loaded `Children` list and renames in that order.
+Omitting `FileOrder` falls back to natural filesystem order, preserving backward compatibility.
 
 ---
 
@@ -368,7 +371,7 @@ application renames and deletes files.
 - [ ] **1.1** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
 - [ ] **1.2** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
 - [ ] **1.3** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages
-- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async
+- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
 - [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
 - [ ] **1.6** Verify all tests pass — Green test suite before proceeding
 
@@ -378,7 +381,7 @@ application renames and deletes files.
 - [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
 - [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
 - [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
-- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename`, `POST rename-by-datetime`, `POST sort`
+- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
 - [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
 - [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
 - [ ] **2.8** Add configuration — `ARCHIVE_ROOT`, `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults
@@ -392,8 +395,8 @@ application renames and deletes files.
 - [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
 - [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
 - [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
-- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button
-- [ ] **3.8** Implement sort controls — Sort by name / sort by date
+- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
+- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state; sorted order is sent via `fileOrder` on rename
 - [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
 - [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
