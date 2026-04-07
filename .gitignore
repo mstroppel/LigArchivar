@@ -263,6 +263,19 @@ FakesAssemblies/
 .ntvs_analysis.dat
 node_modules/
 
+# Frontend build output
+src/frontend/dist/
+
+# Docker
+.env
+
+# Test results
+TestResults/
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+
 # Visual Studio 6 build log
 *.plg
 
