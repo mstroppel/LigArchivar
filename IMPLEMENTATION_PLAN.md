@@ -416,6 +416,16 @@ application renames and deletes files.
 - [ ] **5.4** Performance — Consider lazy-loading subtrees if the archive is large
 - [ ] **5.5** Documentation — README with build and deployment instructions
 
+### Phase 6: CI/CD with GitHub Actions (estimated: 1–2 days)
+
+- [ ] **6.1** PR validation workflow — Triggered on pull requests to `main`; runs backend
+  tests (`dotnet test`), frontend lint/type-check (`npm run lint`, `tsc --noEmit`), and
+  frontend unit tests (`npm test`); reports results as a required status check
+- [ ] **6.2** Docker build & push workflow — Triggered on push to `main` and on creation
+  of a new version tag (e.g. `v*`); builds the multi-stage Docker image and pushes it to
+  the container registry (e.g. GitHub Container Registry `ghcr.io`); tags the image with
+  both `latest` (for `main` pushes) and the version tag (e.g. `v1.2.3`) for releases
+
 ---
 
 ## 8. Decisions
