@@ -39,13 +39,13 @@ ArchiveRoot
 - Cross-validation: ClubChar and Year in child names must match parent directories.
 - Validity propagates upward: one invalid child makes all ancestors invalid.
 - Files named `Thumbs.db` are ignored.
-- A lone `.dng` without companion `.jpg` is marked "lonely" and deleted on rename.
+- A `.dng` without a companion `.jpg` is marked "orphaned" and deleted on rename.
 
 ### Rename Operations
 
 - **Sequential rename**: Renumbers files starting from a given number (`001`, `002`, …).
 - **DateTime rename**: Renames files based on `LastWriteTimeUtc`.
-- Both operations delete lonely `.dng` files and throw `RenameException` on conflicts.
+- Both operations delete orphaned `.dng` files and throw `RenameException` on conflicts.
 
 ### Dependencies Worth Noting
 
@@ -294,7 +294,7 @@ public record FileGroupDto(
     string[] Extensions,
     string[] Properties,
     bool IsValid,
-    bool IsLonely,
+    bool IsOrphaned,
     DateTime LastWriteTimeUtc   // used by the frontend for sort-by-date
 );
 
