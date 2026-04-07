@@ -294,7 +294,8 @@ public record FileGroupDto(
     string[] Extensions,
     string[] Properties,
     bool IsValid,
-    bool IsLonely
+    bool IsLonely,
+    DateTime LastWriteTimeUtc   // used by the frontend for sort-by-date
 );
 
 public record RenameRequestDto(int StartNumber, string[]? FileOrder = null);
@@ -396,7 +397,7 @@ application renames and deletes files.
 - [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
 - [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
 - [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
-- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state; sorted order is sent via `fileOrder` on rename
+- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
 - [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
 - [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
