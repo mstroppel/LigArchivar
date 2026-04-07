@@ -352,15 +352,14 @@ services:
     volumes:
       - /path/to/archive:/archive:rw
     environment:
-      - ARCHIVE_ROOT=/archive
       - AUTH_USERNAME=admin
       - AUTH_PASSWORD=changeme
 ```
 
 ### 6.4 Volume Mounting
 
-The archive is mounted at `/archive` inside the container. The `ARCHIVE_ROOT` environment
-variable tells the API where to find it. The mount must be read-write (`:rw`) since the
+The archive is mounted at `/archive` inside the container — this path is fixed and hardcoded
+in the application. The mount must be read-write (`:rw`) since the
 application renames and deletes files.
 
 ---
@@ -385,7 +384,7 @@ application renames and deletes files.
 - [ ] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
 - [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
 - [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
-- [ ] **2.8** Add configuration — `ARCHIVE_ROOT`, `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults
+- [ ] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults; archive root is hardcoded to `/archive`
 - [ ] **2.9** Add API tests — Integration tests with `MockFileSystem`
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
