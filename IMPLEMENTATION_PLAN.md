@@ -99,15 +99,18 @@ which would block ASP.NET request threads.
 
 - Make `EventDirectory.LoadChildren()`, `Rename()`, `RenameToFileDateTime()` async.
 - Make `ArchiveRoot.TryCreate()` async.
-- Use `Task.Run` for CPU-bound directory enumeration if `System.IO.Abstractions` does not
-  offer async directory listing (it doesn't as of v13 — consider upgrading to latest).
+- Update `System.IO.Abstractions` to the latest version (v21+), which provides async
+  file and directory operations. Use async methods where available. For any remaining
+  synchronous I/O (e.g. directory enumeration), accept the blocking call rather than
+  wrapping in `Task.Run` — the mounted volume is effectively local I/O and `Task.Run`
+  on ASP.NET Core does not save thread pool resources.
 
 ### 2.4 Update target framework
 
 - Retarget `FL.LigArchivar.Core` from `netstandard2.0` to `net10.0`.
 - Retarget tests from `netcoreapp2.1` to `net10.0`.
 - Update `System.IO.Abstractions` to the latest version.
-- Update NUnit to v4.x.
+- Migrate from NUnit to xUnit v3.
 
 ### 2.5 Improve error handling
 
@@ -231,14 +234,16 @@ GET  /api/auth/status
 
 All other `/api/*` endpoints require a valid auth cookie — unauthenticated requests
 return `401`. The frontend shows a login form and stores the session via the cookie
-(no token management needed on the client).
+(no token management needed on the client). The auth cookie is configured with `HttpOnly`,
+`Secure`, and `SameSite=Strict`. In production, a reverse proxy (e.g. Caddy, nginx,
+Traefik) handles TLS termination in front of the container.
 
 ### 5.2 Concurrency
 
 Multiple users may browse the archive simultaneously (read-only operations are safe).
 Write operations (rename, delete) are serialized with a global `SemaphoreSlim(1,1)` in
-the `ArchiveService`. If a rename is already in progress, a second request waits (or
-returns `409 Conflict` with a message like "A rename operation is already in progress").
+the `ArchiveService`. If a rename is already in progress, a second request immediately
+returns `409 Conflict` with a message like "A rename operation is already in progress".
 
 ### 5.3 Endpoints
 
@@ -338,6 +343,8 @@ WORKDIR /app
 COPY --from=backend-build /app/publish ./
 COPY --from=frontend-build /app/frontend/dist ./wwwroot
 EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
 ENTRYPOINT ["dotnet", "FL.LigArchivar.Api.dll"]
 ```
 
@@ -356,6 +363,9 @@ services:
       - AUTH_PASSWORD=changeme
 ```
 
+In production, credentials should be provided via a `.env` file (excluded from version
+control) or Docker secrets, not hardcoded in `docker-compose.yml`.
+
 ### 6.4 Volume Mounting
 
 The archive is mounted at `/archive` inside the container — this path is fixed and hardcoded
@@ -368,9 +378,9 @@ application renames and deletes files.
 
 ### Phase 1: Refactor Core (estimated: 3–4 days)
 
-- [ ] **1.1** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
-- [ ] **1.2** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
-- [ ] **1.3** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages
+- [ ] **1.1** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages; use Central Package Management (`Directory.Packages.props`) to manage NuGet package versions consistently across all projects
+- [ ] **1.2** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
+- [ ] **1.3** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
 - [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
 - [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
 - [ ] **1.6** Verify all tests pass — Green test suite before proceeding
@@ -389,7 +399,9 @@ application renames and deletes files.
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
-- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`
+- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`; configure
+  Vite's dev server to proxy `/api` requests to the ASP.NET backend (e.g. `http://localhost:5000`)
+  so that cookies and API calls work during local development without CORS configuration
 - [ ] **3.2** Define TypeScript types — Mirror the API DTOs
 - [ ] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
 - [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
