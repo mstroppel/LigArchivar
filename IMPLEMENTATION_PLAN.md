@@ -39,13 +39,13 @@ ArchiveRoot
 - Cross-validation: ClubChar and Year in child names must match parent directories.
 - Validity propagates upward: one invalid child makes all ancestors invalid.
 - Files named `Thumbs.db` are ignored.
-- A lone `.dng` without companion `.jpg` is marked "lonely" and deleted on rename.
+- A `.dng` without a companion `.jpg` is marked "orphaned" and deleted on rename.
 
 ### Rename Operations
 
 - **Sequential rename**: Renumbers files starting from a given number (`001`, `002`, …).
 - **DateTime rename**: Renames files based on `LastWriteTimeUtc`.
-- Both operations delete lonely `.dng` files and throw `RenameException` on conflicts.
+- Both operations delete orphaned `.dng` files and throw `RenameException` on conflicts.
 
 ### Dependencies Worth Noting
 
@@ -149,7 +149,7 @@ Client-side SPA. Builds to static files served directly by the ASP.NET backend
 FL.LigArchivar/
 ├── src/
 │   ├── backend/
-│   │   ├── FL.LigArchivar.sln
+│   │   ├── FL.LigArchivar.slnx
 │   │   ├── FL.LigArchivar.Core/           # Domain logic (retargeted to net10.0)
 │   │   │   ├── FL.LigArchivar.Core.csproj
 │   │   │   ├── ArchiveRoot.cs
@@ -258,16 +258,15 @@ GET  /api/events/{path}
 
 POST /api/events/{path}/rename
      Sequential rename. Acquires write lock.
-     Body: { "startNumber": 1 }
+     Body: { "startNumber": 1, "fileOrder": ["A_2018-05-01_003", "A_2018-05-01_001"] }
+     fileOrder is optional. If omitted, the backend uses its natural (filesystem) order.
+     If provided, files are renamed in the given order — enabling any client-side sorting
+     or custom drag-and-drop reordering without additional API changes.
      Response: EventDetailDto (refreshed file list)
 
 POST /api/events/{path}/rename-by-datetime
      DateTime-based rename. Acquires write lock.
      Response: EventDetailDto
-
-POST /api/events/{path}/sort
-     Body: { "sortBy": "name" | "date" }
-     Response: EventDetailDto (re-sorted file list)
 ```
 
 ### 5.4 DTO Examples
@@ -295,11 +294,16 @@ public record FileGroupDto(
     string[] Extensions,
     string[] Properties,
     bool IsValid,
-    bool IsLonely
+    bool IsOrphaned,
+    DateTime LastWriteTimeUtc   // used by the frontend for sort-by-date
 );
 
-public record RenameRequestDto(int StartNumber);
+public record RenameRequestDto(int StartNumber, string[]? FileOrder = null);
 ```
+
+`FileOrder` contains file base names (without extensions) in the desired rename sequence.
+The backend looks up each name in the loaded `Children` list and renames in that order.
+Omitting `FileOrder` falls back to natural filesystem order, preserving backward compatibility.
 
 ---
 
@@ -348,15 +352,14 @@ services:
     volumes:
       - /path/to/archive:/archive:rw
     environment:
-      - ARCHIVE_ROOT=/archive
       - AUTH_USERNAME=admin
       - AUTH_PASSWORD=changeme
 ```
 
 ### 6.4 Volume Mounting
 
-The archive is mounted at `/archive` inside the container. The `ARCHIVE_ROOT` environment
-variable tells the API where to find it. The mount must be read-write (`:rw`) since the
+The archive is mounted at `/archive` inside the container — this path is fixed and hardcoded
+in the application. The mount must be read-write (`:rw`) since the
 application renames and deletes files.
 
 ---
@@ -365,63 +368,53 @@ application renames and deletes files.
 
 ### Phase 1: Refactor Core (estimated: 3–4 days)
 
-| # | Task | Details |
-|---|---|---|
-| 1.1 | Remove Caliburn.Micro from Core | Replace `PropertyChangedBase`, replace logging with `ILogger<T>` |
-| 1.2 | Replace `FileSystemProvider` static with DI | Constructor-inject `IFileSystem` everywhere |
-| 1.3 | Retarget to .NET 10 | Update `.csproj` files, update NuGet packages |
-| 1.4 | Add async support | Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async |
-| 1.5 | Update tests | Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring |
-| 1.6 | Verify all tests pass | Green test suite before proceeding |
+- [ ] **1.1** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
+- [ ] **1.2** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
+- [ ] **1.3** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages
+- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
+- [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
+- [ ] **1.6** Verify all tests pass — Green test suite before proceeding
 
 ### Phase 2: Build API (estimated: 4–5 days)
 
-| # | Task | Details |
-|---|---|---|
-| 2.1 | Create `FL.LigArchivar.Api` project | ASP.NET Core Web API, .NET 10, reference Core |
-| 2.2 | Implement authentication | Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints |
-| 2.3 | Implement `ArchiveService` | Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations |
-| 2.4 | Implement `ArchiveController` | `GET /api/archive/tree` |
-| 2.5 | Implement `EventsController` | `GET`, `POST rename`, `POST rename-by-datetime`, `POST sort` |
-| 2.6 | Add write-operation locking | `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available |
-| 2.7 | Add path validation middleware | Prevent directory traversal attacks (e.g. `../../etc/passwd`) |
-| 2.8 | Add configuration | `ARCHIVE_ROOT`, `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults |
-| 2.9 | Add API tests | Integration tests with `MockFileSystem` |
+- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
+- [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
+- [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
+- [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
+- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
+- [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
+- [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
+- [ ] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults; archive root is hardcoded to `/archive`
+- [ ] **2.9** Add API tests — Integration tests with `MockFileSystem`
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
-| # | Task | Details |
-|---|---|---|
-| 3.1 | Scaffold Vite + React + TypeScript project | `npm create vite@latest` |
-| 3.2 | Define TypeScript types | Mirror the API DTOs |
-| 3.3 | Implement API client | Fetch wrapper with error handling, auth cookie handled automatically by browser |
-| 3.4 | Implement login page | Simple username/password form, redirect to main view on success |
-| 3.5 | Implement archive tree view | Collapsible tree, color-coded validity (red/black) |
-| 3.6 | Implement file list view | Table/grid showing files for the selected event |
-| 3.7 | Implement rename controls | Start number input, rename button, rename-by-datetime button |
-| 3.8 | Implement sort controls | Sort by name / sort by date |
-| 3.9 | Error handling | Display rename errors, 409 conflict ("rename in progress"), connection errors |
-| 3.10 | Styling | Clean, functional UI — match the existing WPF layout roughly |
+- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`
+- [ ] **3.2** Define TypeScript types — Mirror the API DTOs
+- [ ] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
+- [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
+- [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
+- [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
+- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
+- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
+- [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
+- [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
 ### Phase 4: Docker & Deployment (estimated: 2 days)
 
-| # | Task | Details |
-|---|---|---|
-| 4.1 | Create Dockerfile | Multi-stage build as described above |
-| 4.2 | Create docker-compose.yml | Volume mount, port mapping, environment variables |
-| 4.3 | Configure static file serving | ASP.NET serves `wwwroot` (frontend build output) |
-| 4.4 | Add SPA fallback routing | `app.MapFallbackToFile("index.html")` for client-side routing |
-| 4.5 | Test end-to-end in container | Build image, run with real archive mount, verify all features |
+- [ ] **4.1** Create Dockerfile — Multi-stage build as described above
+- [ ] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
+- [ ] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
+- [ ] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
+- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features
 
 ### Phase 5: Polish & Hardening (estimated: 2 days)
 
-| # | Task | Details |
-|---|---|---|
-| 5.1 | Logging | Structured logging with `Serilog` or built-in `ILogger` |
-| 5.2 | Health check endpoint | `GET /health` for Docker health checks |
-| 5.3 | Security review | File path validation, container runs as non-root user |
-| 5.4 | Performance | Consider lazy-loading subtrees if the archive is large |
-| 5.5 | Documentation | README with build and deployment instructions |
+- [ ] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
+- [ ] **5.2** Health check endpoint — `GET /health` for Docker health checks
+- [ ] **5.3** Security review — File path validation, container runs as non-root user
+- [ ] **5.4** Performance — Consider lazy-loading subtrees if the archive is large
+- [ ] **5.5** Documentation — README with build and deployment instructions
 
 ---
 
