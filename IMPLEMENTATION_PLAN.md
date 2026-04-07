@@ -365,63 +365,53 @@ application renames and deletes files.
 
 ### Phase 1: Refactor Core (estimated: 3–4 days)
 
-| # | Task | Details |
-|---|---|---|
-| 1.1 | Remove Caliburn.Micro from Core | Replace `PropertyChangedBase`, replace logging with `ILogger<T>` |
-| 1.2 | Replace `FileSystemProvider` static with DI | Constructor-inject `IFileSystem` everywhere |
-| 1.3 | Retarget to .NET 10 | Update `.csproj` files, update NuGet packages |
-| 1.4 | Add async support | Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async |
-| 1.5 | Update tests | Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring |
-| 1.6 | Verify all tests pass | Green test suite before proceeding |
+- [ ] **1.1** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
+- [ ] **1.2** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
+- [ ] **1.3** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages
+- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async
+- [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
+- [ ] **1.6** Verify all tests pass — Green test suite before proceeding
 
 ### Phase 2: Build API (estimated: 4–5 days)
 
-| # | Task | Details |
-|---|---|---|
-| 2.1 | Create `FL.LigArchivar.Api` project | ASP.NET Core Web API, .NET 10, reference Core |
-| 2.2 | Implement authentication | Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints |
-| 2.3 | Implement `ArchiveService` | Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations |
-| 2.4 | Implement `ArchiveController` | `GET /api/archive/tree` |
-| 2.5 | Implement `EventsController` | `GET`, `POST rename`, `POST rename-by-datetime`, `POST sort` |
-| 2.6 | Add write-operation locking | `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available |
-| 2.7 | Add path validation middleware | Prevent directory traversal attacks (e.g. `../../etc/passwd`) |
-| 2.8 | Add configuration | `ARCHIVE_ROOT`, `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults |
-| 2.9 | Add API tests | Integration tests with `MockFileSystem` |
+- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core
+- [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
+- [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
+- [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
+- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename`, `POST rename-by-datetime`, `POST sort`
+- [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
+- [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
+- [ ] **2.8** Add configuration — `ARCHIVE_ROOT`, `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults
+- [ ] **2.9** Add API tests — Integration tests with `MockFileSystem`
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
-| # | Task | Details |
-|---|---|---|
-| 3.1 | Scaffold Vite + React + TypeScript project | `npm create vite@latest` |
-| 3.2 | Define TypeScript types | Mirror the API DTOs |
-| 3.3 | Implement API client | Fetch wrapper with error handling, auth cookie handled automatically by browser |
-| 3.4 | Implement login page | Simple username/password form, redirect to main view on success |
-| 3.5 | Implement archive tree view | Collapsible tree, color-coded validity (red/black) |
-| 3.6 | Implement file list view | Table/grid showing files for the selected event |
-| 3.7 | Implement rename controls | Start number input, rename button, rename-by-datetime button |
-| 3.8 | Implement sort controls | Sort by name / sort by date |
-| 3.9 | Error handling | Display rename errors, 409 conflict ("rename in progress"), connection errors |
-| 3.10 | Styling | Clean, functional UI — match the existing WPF layout roughly |
+- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`
+- [ ] **3.2** Define TypeScript types — Mirror the API DTOs
+- [ ] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
+- [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
+- [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
+- [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
+- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button
+- [ ] **3.8** Implement sort controls — Sort by name / sort by date
+- [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
+- [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
 ### Phase 4: Docker & Deployment (estimated: 2 days)
 
-| # | Task | Details |
-|---|---|---|
-| 4.1 | Create Dockerfile | Multi-stage build as described above |
-| 4.2 | Create docker-compose.yml | Volume mount, port mapping, environment variables |
-| 4.3 | Configure static file serving | ASP.NET serves `wwwroot` (frontend build output) |
-| 4.4 | Add SPA fallback routing | `app.MapFallbackToFile("index.html")` for client-side routing |
-| 4.5 | Test end-to-end in container | Build image, run with real archive mount, verify all features |
+- [ ] **4.1** Create Dockerfile — Multi-stage build as described above
+- [ ] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
+- [ ] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
+- [ ] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
+- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features
 
 ### Phase 5: Polish & Hardening (estimated: 2 days)
 
-| # | Task | Details |
-|---|---|---|
-| 5.1 | Logging | Structured logging with `Serilog` or built-in `ILogger` |
-| 5.2 | Health check endpoint | `GET /health` for Docker health checks |
-| 5.3 | Security review | File path validation, container runs as non-root user |
-| 5.4 | Performance | Consider lazy-loading subtrees if the archive is large |
-| 5.5 | Documentation | README with build and deployment instructions |
+- [ ] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
+- [ ] **5.2** Health check endpoint — `GET /health` for Docker health checks
+- [ ] **5.3** Security review — File path validation, container runs as non-root user
+- [ ] **5.4** Performance — Consider lazy-loading subtrees if the archive is large
+- [ ] **5.5** Documentation — README with build and deployment instructions
 
 ---
 
