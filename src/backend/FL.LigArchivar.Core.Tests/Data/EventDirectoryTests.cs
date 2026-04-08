@@ -1,5 +1,4 @@
 using FL.LigArchivar.Core.Data;
-using System.IO.Abstractions;
 using Xunit;
 
 namespace FL.LigArchivar.Core.Tests.Data;
@@ -12,8 +11,8 @@ public class EventDirectoryTests
     {
         var fs = FileSystemForTesting.Create();
         var created = ArchiveRoot.TryCreate("/archiv", fs, out _root!);
-        Assert.True(created);
-        Assert.NotNull(_root);
+        created.Should().BeTrue();
+        _root.Should().NotBeNull();
     }
 
     [Fact]
@@ -23,12 +22,12 @@ public class EventDirectoryTests
         var uut = _root.GetChild("Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung");
 
         // Assert
-        var eventDir = Assert.IsType<EventDirectory>(uut);
-        Assert.Equal("A", eventDir.ClubChar);
-        Assert.Equal("2018", eventDir.Year);
-        Assert.Equal("05", eventDir.Month);
-        Assert.Equal("01", eventDir.Day);
-        Assert.Equal("Maiwanderung", eventDir.EventName);
+        var eventDir = uut.Should().BeOfType<EventDirectory>().Subject;
+        eventDir.ClubChar.Should().Be("A");
+        eventDir.Year.Should().Be("2018");
+        eventDir.Month.Should().Be("05");
+        eventDir.Day.Should().Be("01");
+        eventDir.EventName.Should().Be("Maiwanderung");
     }
 
     [Fact]
@@ -37,13 +36,13 @@ public class EventDirectoryTests
         // Arrange
         var uut = _root.GetChild("Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung")
             as EventDirectory;
-        Assert.NotNull(uut);
+        uut.Should().NotBeNull();
 
         // Act
-        uut.LoadChildren();
+        uut!.LoadChildren();
 
         // Assert
-        Assert.Equal(5, uut.Children.Count);
+        uut.Children.Should().HaveCount(5);
     }
 
     [Fact]
@@ -52,15 +51,15 @@ public class EventDirectoryTests
         // Arrange
         var uut = _root.GetChild("Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung")
             as EventDirectory;
-        Assert.NotNull(uut);
-        uut.LoadChildren();
+        uut.Should().NotBeNull();
+        uut!.LoadChildren();
 
         // Act
         uut.Rename(10);
 
         // Assert
-        Assert.Equal(5, uut.Children.Count);
-        Assert.Equal("A_2018-05-01_010", uut.Children[0].Name);
-        Assert.Equal("A_2018-05-01_014", uut.Children[4].Name);
+        uut.Children.Should().HaveCount(5);
+        uut.Children[0].Name.Should().Be("A_2018-05-01_010");
+        uut.Children[4].Name.Should().Be("A_2018-05-01_014");
     }
 }

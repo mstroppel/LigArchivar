@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
@@ -16,6 +17,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FL.LigArchivar.Core\FL.LigArchivar.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="FluentAssertions" />
   </ItemGroup>
 
 </Project>

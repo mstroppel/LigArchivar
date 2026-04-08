@@ -29,11 +29,11 @@ public class AuthControllerTests : IAsyncLifetime
     public async Task Status_WhenUnauthenticated_ReturnsAuthenticatedFalse()
     {
         var response = await _client.GetAsync("/api/auth/status");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var dto = await response.Content.ReadFromJsonAsync<AuthStatusDto>();
-        Assert.NotNull(dto);
-        Assert.False(dto.Authenticated);
+        dto.Should().NotBeNull();
+        dto!.Authenticated.Should().BeFalse();
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class AuthControllerTests : IAsyncLifetime
     {
         var response = await _client.PostAsJsonAsync("/api/auth/login",
             new { username = "admin", password = "changeme" });
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class AuthControllerTests : IAsyncLifetime
     {
         var response = await _client.PostAsJsonAsync("/api/auth/login",
             new { username = "wrong", password = "wrong" });
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 
     [Fact]
@@ -60,8 +60,8 @@ public class AuthControllerTests : IAsyncLifetime
 
         var response = await _client.GetAsync("/api/auth/status");
         var dto = await response.Content.ReadFromJsonAsync<AuthStatusDto>();
-        Assert.NotNull(dto);
-        Assert.True(dto.Authenticated);
+        dto.Should().NotBeNull();
+        dto!.Authenticated.Should().BeTrue();
     }
 
     [Fact]
@@ -73,14 +73,14 @@ public class AuthControllerTests : IAsyncLifetime
 
         // Verify authenticated
         var statusBefore = await _client.GetFromJsonAsync<AuthStatusDto>("/api/auth/status");
-        Assert.True(statusBefore!.Authenticated);
+        statusBefore!.Authenticated.Should().BeTrue();
 
         // Logout
         await _client.PostAsync("/api/auth/logout", null);
 
         // Verify no longer authenticated
         var statusAfter = await _client.GetFromJsonAsync<AuthStatusDto>("/api/auth/status");
-        Assert.False(statusAfter!.Authenticated);
+        statusAfter!.Authenticated.Should().BeFalse();
     }
 }
 
@@ -106,41 +106,39 @@ public class ArchiveControllerTests : IAsyncLifetime
     public async Task GetTree_WhenAuthenticated_ReturnsTree()
     {
         var response = await _client.GetAsync("/api/archive/tree");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var tree = await response.Content.ReadFromJsonAsync<TreeNodeDto[]>();
-        Assert.NotNull(tree);
-        Assert.NotEmpty(tree);
+        tree.Should().NotBeNullOrEmpty();
     }
 
     [Fact]
     public async Task GetTree_ContainsDigitalfotoAsset()
     {
         var tree = await _client.GetFromJsonAsync<TreeNodeDto[]>("/api/archive/tree");
-        Assert.NotNull(tree);
+        tree.Should().NotBeNull();
 
-        var digitalfoto = tree.FirstOrDefault(n => n.Name == "Digitalfoto");
-        Assert.NotNull(digitalfoto);
-        Assert.Equal("asset", digitalfoto.NodeType);
+        var digitalfoto = tree!.FirstOrDefault(n => n.Name == "Digitalfoto");
+        digitalfoto.Should().NotBeNull();
+        digitalfoto!.NodeType.Should().Be("asset");
     }
 
     [Fact]
     public async Task GetTree_WithSubPath_ReturnsSubtree()
     {
         var response = await _client.GetAsync("/api/archive/tree?path=Digitalfoto");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var tree = await response.Content.ReadFromJsonAsync<TreeNodeDto[]>();
-        Assert.NotNull(tree);
-        // Should contain the 2018 year directory
-        Assert.Contains(tree, n => n.Name == "2018");
+        tree.Should().NotBeNull();
+        tree.Should().Contain(n => n.Name == "2018");
     }
 
     [Fact]
     public async Task GetTree_WithTraversalPath_ReturnsBadRequest()
     {
         var response = await _client.GetAsync("/api/archive/tree?path=../etc");
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -148,7 +146,7 @@ public class ArchiveControllerTests : IAsyncLifetime
     {
         var unauthClient = _factory.CreateClient();
         var response = await unauthClient.GetAsync("/api/archive/tree");
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
 
@@ -177,12 +175,12 @@ public class EventsControllerTests : IAsyncLifetime
     public async Task GetEvent_ValidPath_ReturnsEventDetail()
     {
         var response = await _client.GetAsync($"/api/events/{EventPath}");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var dto = await response.Content.ReadFromJsonAsync<EventDetailDto>();
-        Assert.NotNull(dto);
-        Assert.Equal("A_2018-05-01_Maiwanderung", dto.Name);
-        Assert.Equal(3, dto.Files.Length);
+        dto.Should().NotBeNull();
+        dto!.Name.Should().Be("A_2018-05-01_Maiwanderung");
+        dto.Files.Should().HaveCount(3);
     }
 
     [Fact]
@@ -196,14 +194,14 @@ public class EventsControllerTests : IAsyncLifetime
         var request = new RenameRequestDto(1);
         var response = await _client.PostAsJsonAsync(
             "/api/events/rename?path=..%2Fetc%2Fpasswd", request);
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
     public async Task GetEvent_NonExistentPath_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/events/Digitalfoto/2018/A-Albverein/A_2018-01-01_DoesNotExist");
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -212,12 +210,12 @@ public class EventsControllerTests : IAsyncLifetime
         var request = new RenameRequestDto(1);
         var response = await _client.PostAsJsonAsync(
             $"/api/events/rename?path={Uri.EscapeDataString(EventPath)}", request);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var dto = await response.Content.ReadFromJsonAsync<EventDetailDto>();
-        Assert.NotNull(dto);
+        dto.Should().NotBeNull();
         // After renaming starting at 1, files should be 001, 002, 003
-        Assert.Contains(dto.Files, f => f.Name == "A_2018-05-01_001");
+        dto!.Files.Should().Contain(f => f.Name == "A_2018-05-01_001");
     }
 
     [Fact]
@@ -240,11 +238,11 @@ public class EventsControllerTests : IAsyncLifetime
         var request = new RenameRequestDto(1, ["A_2018-05-01_030", "A_2018-05-01_020", "A_2018-05-01_010"]);
         var response = await client.PostAsJsonAsync(
             $"/api/events/rename?path={Uri.EscapeDataString(EventPath)}", request);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var dto = await response.Content.ReadFromJsonAsync<EventDetailDto>();
-        Assert.NotNull(dto);
-        Assert.Equal(3, dto.Files.Length);
+        dto.Should().NotBeNull();
+        dto!.Files.Should().HaveCount(3);
     }
 
     [Fact]
@@ -253,7 +251,7 @@ public class EventsControllerTests : IAsyncLifetime
         var request = new RenameRequestDto(1);
         var response = await _client.PostAsJsonAsync(
             "/api/events/rename?path=../etc", request);
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -279,7 +277,7 @@ public class EventsControllerTests : IAsyncLifetime
 
         var response = await client.PostAsync(
             $"/api/events/rename-by-datetime?path={Uri.EscapeDataString(EventPath)}", null);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -287,6 +285,6 @@ public class EventsControllerTests : IAsyncLifetime
     {
         var unauthClient = _factory.CreateClient();
         var response = await unauthClient.GetAsync("/health");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }
