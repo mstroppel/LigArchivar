@@ -1,6 +1,5 @@
 using System.IO.Abstractions.TestingHelpers;
 using FL.LigArchivar.Core.Data;
-using FluentAssertions;
 using Xunit;
 
 namespace FL.LigArchivar.Core.Tests.Data;

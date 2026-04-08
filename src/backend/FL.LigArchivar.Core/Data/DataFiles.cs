@@ -1,6 +1,5 @@
 using System.Collections.Immutable;
 using System.Globalization;
-using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using FL.LigArchivar.Core.Utilities;
