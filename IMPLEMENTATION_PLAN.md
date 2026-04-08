@@ -399,18 +399,18 @@ application renames and deletes files.
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
-- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`; configure
+- [x] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`; configure
   Vite's dev server to proxy `/api` requests to the ASP.NET backend (e.g. `http://localhost:5000`)
   so that cookies and API calls work during local development without CORS configuration
-- [ ] **3.2** Define TypeScript types — Mirror the API DTOs
-- [ ] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
-- [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
-- [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
-- [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
-- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
-- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
-- [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
-- [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
+- [x] **3.2** Define TypeScript types — Mirror the API DTOs
+- [x] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
+- [x] **3.4** Implement login page — Simple username/password form, redirect to main view on success
+- [x] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
+- [x] **3.6** Implement file list view — Table/grid showing files for the selected event
+- [x] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
+- [x] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
+- [x] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
+- [x] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
 ### Phase 4: Docker & Deployment (estimated: 2 days)
 

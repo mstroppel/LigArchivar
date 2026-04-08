@@ -1,0 +1,113 @@
+/* ── CSS custom properties ─────────────────────────────────────────────────── */
+:root {
+  /* Light theme */
+  --color-bg: #ffffff;
+  --color-surface: #f9f9f9;
+  --color-text: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --color-border-light: #f0f0f0;
+  --color-hover: #f3f4f6;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-error: #dc2626;
+  --color-error-bg: #fef2f2;
+  --color-error-border: #fca5a5;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-tag-bg: #e5e7eb;
+  --color-tag-text: #374151;
+
+  font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color-scheme: light dark;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #111827;
+    --color-surface: #1f2937;
+    --color-text: #f9fafb;
+    --color-text-muted: #9ca3af;
+    --color-border: #374151;
+    --color-border-light: #2d3748;
+    --color-hover: #374151;
+    --color-accent: #3b82f6;
+    --color-accent-hover: #2563eb;
+    --color-error: #f87171;
+    --color-error-bg: #450a0a;
+    --color-error-border: #991b1b;
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-tag-bg: #374151;
+    --color-tag-text: #d1d5db;
+  }
+}
+
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+input {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Scrollbar styling for webkit */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
