@@ -378,24 +378,24 @@ application renames and deletes files.
 
 ### Phase 1: Refactor Core (estimated: 3–4 days)
 
-- [ ] **1.1** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages; use Central Package Management (`Directory.Packages.props`) to manage NuGet package versions consistently across all projects
-- [ ] **1.2** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
-- [ ] **1.3** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
-- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
-- [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
-- [ ] **1.6** Verify all tests pass — Green test suite before proceeding
+- [x] **1.1** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages; use Central Package Management (`Directory.Packages.props`) to manage NuGet package versions consistently across all projects
+- [x] **1.2** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
+- [x] **1.3** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
+- [x] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
+- [x] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
+- [x] **1.6** Verify all tests pass — Green test suite before proceeding
 
 ### Phase 2: Build API (estimated: 4–5 days)
 
-- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
-- [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
-- [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
-- [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
-- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
-- [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
-- [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
-- [ ] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD`, `ARCHIVE_ROOT` from environment, `appsettings.json` for defaults
-- [ ] **2.9** Add API tests — Integration tests with `MockFileSystem`
+- [x] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
+- [x] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
+- [x] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
+- [x] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
+- [x] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
+- [x] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
+- [x] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
+- [x] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD`, `ARCHIVE_ROOT` from environment, `appsettings.json` for defaults
+- [x] **2.9** Add API tests — Integration tests with `MockFileSystem`
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
