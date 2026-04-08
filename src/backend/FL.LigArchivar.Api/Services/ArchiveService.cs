@@ -11,7 +11,7 @@ namespace FL.LigArchivar.Api.Services;
 /// </summary>
 public sealed class ArchiveService : IDisposable
 {
-    private const string ArchiveRoot = "/archive";
+    private readonly string _archiveRoot;
 
     private readonly IFileSystem _fileSystem;
     private readonly ILogger<ArchiveService> _logger;
@@ -22,17 +22,18 @@ public sealed class ArchiveService : IDisposable
     // Simple in-memory cache: reload tree on every read request (archive is local I/O).
     // For large archives, consider caching with a stale-on-write invalidation strategy.
 
-    public ArchiveService(IFileSystem fileSystem, ILogger<ArchiveService> logger)
+    public ArchiveService(IFileSystem fileSystem, ILogger<ArchiveService> logger, IConfiguration configuration)
     {
         _fileSystem = fileSystem;
         _logger = logger;
+        _archiveRoot = configuration["ARCHIVE_ROOT"] ?? "/archive";
     }
 
     // ── Tree ──────────────────────────────────────────────────────────────────
 
     public TreeNodeDto[] GetTree(string? relativePath = null)
     {
-        if (!Core.ArchiveRoot.TryCreate(ArchiveRoot, _fileSystem, out var root) || root == null)
+        if (!Core.ArchiveRoot.TryCreate(_archiveRoot, _fileSystem, out var root) || root == null)
             return [];
 
         IEnumerable<IFileSystemItem> items = root.Children;
@@ -55,7 +56,7 @@ public sealed class ArchiveService : IDisposable
     {
         if (!ValidatePath(path)) return null;
 
-        if (!Core.ArchiveRoot.TryCreate(ArchiveRoot, _fileSystem, out var root) || root == null)
+        if (!Core.ArchiveRoot.TryCreate(_archiveRoot, _fileSystem, out var root) || root == null)
             return null;
 
         var node = root.GetChild(path);
@@ -82,7 +83,7 @@ public sealed class ArchiveService : IDisposable
 
         try
         {
-            if (!Core.ArchiveRoot.TryCreate(ArchiveRoot, _fileSystem, out var root) || root == null)
+            if (!Core.ArchiveRoot.TryCreate(_archiveRoot, _fileSystem, out var root) || root == null)
                 return (null, "archive-not-found");
 
             var node = root.GetChild(path);
@@ -114,7 +115,7 @@ public sealed class ArchiveService : IDisposable
 
         try
         {
-            if (!Core.ArchiveRoot.TryCreate(ArchiveRoot, _fileSystem, out var root) || root == null)
+            if (!Core.ArchiveRoot.TryCreate(_archiveRoot, _fileSystem, out var root) || root == null)
                 return (null, "archive-not-found");
 
             var node = root.GetChild(path);
