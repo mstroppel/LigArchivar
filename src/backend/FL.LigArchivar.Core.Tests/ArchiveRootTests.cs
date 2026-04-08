@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO.Abstractions.TestingHelpers;
-using FL.LigArchivar.Core;
-using FluentAssertions;
+﻿using System.IO.Abstractions.TestingHelpers;
 using Xunit;
 
 namespace FL.LigArchivar.Core.Tests;
