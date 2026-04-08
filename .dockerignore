@@ -1,0 +1,31 @@
+# Ignore development artifacts that should not be copied into the Docker build context.
+
+# Dependencies
+**/node_modules/
+
+# Frontend development output (the Dockerfile builds it fresh)
+src/frontend/dist/
+
+# .NET build/publish artifacts
+**/bin/
+**/obj/
+
+# Editor / OS noise
+.git/
+.gitignore
+**/.DS_Store
+**/Thumbs.db
+**/*.user
+**/.vs/
+
+# Test results
+**/TestResults/
+
+# Local environment overrides
+*.env
+.env.*
+
+# Docker artifacts (avoid recursive context)
+Dockerfile
+docker-compose.yml
+.dockerignore

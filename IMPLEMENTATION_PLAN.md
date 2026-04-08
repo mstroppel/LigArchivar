@@ -414,10 +414,10 @@ application renames and deletes files.
 
 ### Phase 4: Docker & Deployment (estimated: 2 days)
 
-- [ ] **4.1** Create Dockerfile — Multi-stage build as described above
-- [ ] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
-- [ ] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
-- [ ] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
+- [x] **4.1** Create Dockerfile — Multi-stage build as described above
+- [x] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
+- [x] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
+- [x] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
 - [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features
 
 ### Phase 5: Polish & Hardening (estimated: 2 days)
