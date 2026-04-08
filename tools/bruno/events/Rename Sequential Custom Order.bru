@@ -6,6 +6,8 @@ meta {
 
 post {
   url: {{baseUrl}}/api/events/rename
+  body: json
+  auth: none
 }
 
 params:query {
@@ -27,13 +29,13 @@ body:json {
   }
 }
 
-docs {
-  fileOrder contains the base names (without extension) of the files in the desired
-  rename sequence. Files not listed are appended at the end in their natural order.
-}
-
 tests {
   test("returns 200 OK or 422 if names don't match", function() {
     expect([200, 422]).to.include(res.status);
   });
+}
+
+docs {
+  fileOrder contains the base names (without extension) of the files in the desired
+  rename sequence. Files not listed are appended at the end in their natural order.
 }
