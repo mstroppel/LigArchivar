@@ -10,7 +10,7 @@ public class FileSystemItemExtensionsTests
 
     public FileSystemItemExtensionsTests()
     {
-        IFileSystem fs = FileSystemForTesting.Create();
+        var fs = FileSystemForTesting.Create();
         var created = ArchiveRoot.TryCreate("/archiv", fs, out _root!);
         Assert.True(created);
         Assert.NotNull(_root);
