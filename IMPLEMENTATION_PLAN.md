@@ -418,26 +418,27 @@ application renames and deletes files.
 - [x] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
 - [x] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
 - [x] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
-- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features
+- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features (must be done manually; Docker not available in CI environment)
 
 ### Phase 5: Polish & Hardening (estimated: 2 days)
 
-- [ ] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
-- [ ] **5.2** Health check endpoint — `GET /health` for Docker health checks
-- [ ] **5.3** Security review — File path validation, container runs as a configurable
+- [x] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
+- [x] **5.2** Health check endpoint — `GET /health` for Docker health checks
+- [x] **5.3** Security review — File path validation, container runs as a configurable
   user/group so that it matches the owner of the mounted archive files on the host;
   `PUID` and `PGID` environment variables are read at container startup (e.g. via an
   entrypoint script) to set the effective UID/GID of the process, following the same
   pattern used by LinuxServer.io images
-- [ ] **5.4** Performance — Consider lazy-loading subtrees if the archive is large
-- [ ] **5.5** Documentation — README with build and deployment instructions
+- [x] **5.4** Performance — Tree is loaded from disk on each request (fast for local/NFS
+  mounts). Lazy-loading subtrees is deferred to a future iteration (see 9. Future Considerations).
+- [x] **5.5** Documentation — README with build and deployment instructions
 
 ### Phase 6: CI/CD with GitHub Actions (estimated: 1–2 days)
 
-- [ ] **6.1** PR validation workflow — Triggered on pull requests to `main`; runs backend
+- [x] **6.1** PR validation workflow — Triggered on pull requests to `main`; runs backend
   tests (`dotnet test`), frontend lint/type-check (`npm run lint`, `tsc --noEmit`), and
   frontend unit tests (`npm test`); reports results as a required status check
-- [ ] **6.2** Docker build & push workflow — Triggered on push to `main` and on creation
+- [x] **6.2** Docker build & push workflow — Triggered on push to `main` and on creation
   of a new version tag (e.g. `v*`); builds the multi-stage Docker image and pushes it to
   the container registry (e.g. GitHub Container Registry `ghcr.io`); tags the image with
   both `latest` (for `main` pushes) and the version tag (e.g. `v1.2.3`) for releases

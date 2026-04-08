@@ -34,7 +34,10 @@ public sealed class ArchiveService : IDisposable
     public TreeNodeDto[] GetTree(string? relativePath = null)
     {
         if (!Core.ArchiveRoot.TryCreate(_archiveRoot, _fileSystem, out var root) || root == null)
+        {
+            _logger.LogWarning("Archive root '{ArchiveRoot}' does not exist or could not be loaded.", _archiveRoot);
             return [];
+        }
 
         IEnumerable<IFileSystemItem> items = root.Children;
 
@@ -92,6 +95,8 @@ public sealed class ArchiveService : IDisposable
 
             eventDir.LoadChildren();
             eventDir.Rename(request.StartNumber, request.FileOrder);
+            _logger.LogInformation("Renamed {Count} files in '{Path}' starting at {StartNumber}.",
+                eventDir.Children.Count, path, request.StartNumber);
 
             return (MapToEventDetail(eventDir, path), null);
         }
@@ -124,6 +129,8 @@ public sealed class ArchiveService : IDisposable
 
             eventDir.LoadChildren();
             eventDir.RenameToFileDateTime();
+            _logger.LogInformation("Renamed {Count} files in '{Path}' by file date-time.",
+                eventDir.Children.Count, path);
 
             return (MapToEventDetail(eventDir, path), null);
         }
