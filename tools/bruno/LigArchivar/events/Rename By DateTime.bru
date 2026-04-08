@@ -1,0 +1,23 @@
+meta {
+  name: Rename (by datetime)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/events/rename-by-datetime
+}
+
+params:query {
+  path: {{eventPath}}
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("response has files array", function() {
+    expect(res.body.files).to.be.an("array");
+  });
+}

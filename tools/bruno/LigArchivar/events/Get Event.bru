@@ -1,0 +1,23 @@
+meta {
+  name: Get Event
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/events/{{eventPath}}
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("response has name field", function() {
+    expect(res.body).to.have.property("name");
+  });
+
+  test("response has files array", function() {
+    expect(res.body.files).to.be.an("array");
+  });
+}
