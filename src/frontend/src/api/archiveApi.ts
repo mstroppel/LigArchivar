@@ -77,8 +77,19 @@ async function apiFetch<T>(
     throw new ApiError(res.status, message);
   }
 
-  // 204 No Content
+  // 204 No Content, or 200 with an empty body (e.g. login/logout returning Ok())
   if (res.status === 204) {
+    return undefined as unknown as T;
+  }
+
+  const contentType = res.headers.get('content-type');
+  const contentLength = res.headers.get('content-length');
+  const hasBody =
+    contentLength !== '0' &&
+    contentType !== null &&
+    contentType.includes('application/json');
+
+  if (!hasBody) {
     return undefined as unknown as T;
   }
 
