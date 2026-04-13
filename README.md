@@ -19,14 +19,14 @@ Runs as a single Docker container; the archive directory is mounted as a volume.
 
 1. Copy `docker-compose.yml` and create a `.env` file next to it:
 
-   ```
-   AUTH_USERNAME=admin
-   AUTH_PASSWORD=your-secure-password
-   ARCHIVE_ROOT=/archive
-   # Optional: match the UID/GID of the archive owner on the host
-   # PUID=1000
-   # PGID=1000
-   ```
+  ```envfile
+  AUTH_USERNAME=admin
+  AUTH_PASSWORD=your-secure-password
+  ARCHIVE_ROOT=/archive
+  # Optional: match the UID/GID of the archive owner on the host
+  # PUID=1000
+  # PGID=1000
+  ```
 
 2. Edit `docker-compose.yml` to point the volume at your archive directory:
 
@@ -47,13 +47,13 @@ Runs as a single Docker container; the archive directory is mounted as a volume.
 
 ## Environment variables
 
-| Variable        | Default    | Description                                               |
-|-----------------|------------|-----------------------------------------------------------|
-| `AUTH_USERNAME` | `admin`    | Login username                                            |
-| `AUTH_PASSWORD` | `changeme` | Login password — **always override in production**        |
-| `ARCHIVE_ROOT`  | `/archive` | Absolute path inside the container to the archive root    |
-| `PUID`          | (unset)    | UID of the user that owns the archive files on the host   |
-| `PGID`          | (unset)    | GID of the user that owns the archive files on the host   |
+| Variable        | Default    | Description                                             |
+| --------------- | ---------- | ------------------------------------------------------- |
+| `AUTH_USERNAME` | `admin`    | Login username                                          |
+| `AUTH_PASSWORD` | `changeme` | Login password — **always override in production**      |
+| `ARCHIVE_ROOT`  | `/archive` | Absolute path inside the container to the archive root  |
+| `PUID`          | (unset)    | UID of the user that owns the archive files on the host |
+| `PGID`          | (unset)    | GID of the user that owns the archive files on the host |
 
 Setting `PUID`/`PGID` causes the container process to run as that user via
 [gosu](https://github.com/tianon/gosu), following the same pattern as
@@ -66,7 +66,7 @@ Setting `PUID`/`PGID` causes the container process to run as that user via
 ### Prerequisites
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 22](https://nodejs.org/) + npm
+- [Node.js 24](https://nodejs.org/) + npm
 
 ### Backend
 
@@ -97,7 +97,7 @@ docker build -t ligarchivar .
 
 ## Project structure
 
-```
+```text
 FL.LigArchivar/
 ├── src/
 │   ├── backend/
@@ -115,20 +115,20 @@ FL.LigArchivar/
 
 ## Tech stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| **Backend language** | C# | 13 |
-| **Backend framework** | ASP.NET Core Web API | .NET 10 |
-| **Frontend library** | React | 19 |
-| **Frontend language** | TypeScript | 6 |
-| **Frontend build tool** | Vite | 8 |
-| **Server state / caching** | TanStack Query (React Query) | 5 |
-| **Backend testing** | xUnit + FluentAssertions | xUnit 2, FA 8 |
-| **Integration testing** | Microsoft.AspNetCore.Mvc.Testing | .NET 10 |
-| **File-system abstraction** | System.IO.Abstractions | 21 |
-| **Containerization** | Docker (multi-stage build) | — |
-| **CI/CD** | GitHub Actions | — |
-| **API testing** | Bruno | — |
+| Layer                       | Technology                       | Version       |
+| --------------------------- | -------------------------------- | ------------- |
+| **Backend language**        | C#                               | 13            |
+| **Backend framework**       | ASP.NET Core Web API             | .NET 10       |
+| **Frontend library**        | React                            | 19            |
+| **Frontend language**       | TypeScript                       | 6             |
+| **Frontend build tool**     | Vite                             | 8             |
+| **Server state / caching**  | TanStack Query (React Query)     | 5             |
+| **Backend testing**         | xUnit + FluentAssertions         | xUnit 2, FA 8 |
+| **Integration testing**     | Microsoft.AspNetCore.Mvc.Testing | .NET 10       |
+| **File-system abstraction** | System.IO.Abstractions           | 21            |
+| **Containerization**        | Docker (multi-stage build)       | —             |
+| **CI/CD**                   | GitHub Actions                   | —             |
+| **API testing**             | Bruno                            | —             |
 
 ---
 
@@ -147,14 +147,14 @@ FL.LigArchivar/
 
 ## API endpoints
 
-| Method | Path                              | Description                        |
-|--------|-----------------------------------|------------------------------------|
-| POST   | `/api/auth/login`                 | Log in (sets session cookie)       |
-| POST   | `/api/auth/logout`                | Log out                            |
-| GET    | `/api/auth/status`                | Check authentication status        |
-| GET    | `/api/archive/tree`               | Full archive tree                  |
-| GET    | `/api/archive/tree?path=...`      | Subtree at relative path           |
-| GET    | `/api/events/{path}`              | Event details + file list          |
-| POST   | `/api/events/{path}/rename`       | Sequential rename                  |
-| POST   | `/api/events/{path}/rename-by-datetime` | Date-time rename             |
-| GET    | `/health`                         | Health check (for Docker/probes)   |
+| Method | Path                                      | Description                      |
+| ------ | ----------------------------------------- | -------------------------------- |
+| POST   | `/api/auth/login`                         | Log in (sets session cookie)     |
+| POST   | `/api/auth/logout`                        | Log out                          |
+| GET    | `/api/auth/status`                        | Check authentication status      |
+| GET    | `/api/archive/tree`                       | Full archive tree                |
+| GET    | `/api/archive/tree?path=...`              | Subtree at relative path         |
+| GET    | `/api/events?path=...`                    | Event details + file list        |
+| POST   | `/api/events/rename?path=...`             | Sequential rename                |
+| POST   | `/api/events/rename-by-datetime?path=...` | Date-time rename                 |
+| GET    | `/health`                                 | Health check (for Docker/probes) |
