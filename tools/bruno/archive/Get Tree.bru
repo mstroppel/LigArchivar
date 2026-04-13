@@ -1,0 +1,19 @@
+meta {
+  name: Get Tree
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/archive/tree
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("response is an array", function() {
+    expect(res.body).to.be.an("array");
+  });
+}

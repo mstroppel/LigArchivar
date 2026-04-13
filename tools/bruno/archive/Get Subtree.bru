@@ -1,0 +1,23 @@
+meta {
+  name: Get Subtree
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/archive/tree
+}
+
+params:query {
+  path: Digitalfoto
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("response is an array", function() {
+    expect(res.body).to.be.an("array");
+  });
+}

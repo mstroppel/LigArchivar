@@ -1,0 +1,198 @@
+using System.Collections.Immutable;
+using System.IO.Abstractions;
+using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
+using FL.LigArchivar.Core.Utilities;
+
+namespace FL.LigArchivar.Core.Data;
+
+public class EventDirectory : IFileSystemItem
+{
+    private readonly ILogger _logger;
+
+    private EventDirectory(
+        IDirectoryInfo directory,
+        IFileSystemItem? parent,
+        bool isValid,
+        string clubChar,
+        string year,
+        string month,
+        string day,
+        string eventName,
+        ILogger logger)
+    {
+        Name = directory.Name;
+        Directory = directory;
+        Parent = parent;
+        IsValid = isValid;
+        ClubChar = clubChar;
+        Year = year;
+        Month = month;
+        Day = day;
+        EventName = eventName;
+        FilePrefix = clubChar + "_" + year + "-" + month + "-" + day + "_";
+        Children = ImmutableList<DataFiles>.Empty;
+        _logger = logger;
+    }
+
+    public string Name { get; }
+    public bool IsValid { get; }
+    public IFileSystemItem? Parent { get; }
+    public IDirectoryInfo Directory { get; }
+    public string ClubChar { get; }
+    public string Year { get; }
+    public string Month { get; }
+    public string Day { get; }
+    public string EventName { get; }
+    public string FilePrefix { get; }
+    public IImmutableList<DataFiles> Children { get; private set; }
+
+    public void LoadChildren()
+    {
+        var files = Directory.GetFiles();
+        var children = new List<DataFiles>();
+
+        foreach (var file in files)
+        {
+            var instance = new DataFile(file);
+            var existing = children.FirstOrDefault(item => item.Name == instance.Name);
+            if (existing == null)
+            {
+                var dataFiles = new DataFiles(instance, this, _logger);
+                children.Add(dataFiles);
+            }
+            else
+            {
+                existing.AddFile(instance);
+            }
+        }
+
+        Children = children.ToImmutableList();
+    }
+
+    public void Rename(int startNumber, IReadOnlyList<string>? fileOrder = null)
+    {
+        try
+        {
+            var orderedChildren = GetOrderedChildren(fileOrder);
+            var number = startNumber;
+
+            foreach (var child in orderedChildren.Where(item => !item.IsIgnored))
+            {
+                if (child.IsLonely)
+                {
+                    child.Delete();
+                }
+                else
+                {
+                    var newName = $"{FilePrefix}{number:000}";
+                    child.RenameFiles(newName);
+                    ++number;
+                }
+            }
+        }
+        finally
+        {
+            LoadChildren();
+        }
+    }
+
+    public void RenameToFileDateTime()
+    {
+        try
+        {
+            // Seed the used-names set with base names of files on disk that are
+            // NOT part of this rename batch. Files in the batch will be renamed
+            // away from their current names, so their current names must not be
+            // treated as taken — otherwise a file that already has a datetime name
+            // (from a prior rename) would collide with itself.
+            var batchNames = Children
+                .Where(c => !c.IsIgnored && !c.IsLonely)
+                .SelectMany(c => c.Files)
+                .Select(f => f.Name)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var existingBaseNames = Directory
+                .GetFiles()
+                .Select(f => f.FileSystem.Path.GetFileNameWithoutExtension(f.FullName))
+                .Where(name => !batchNames.Contains(name))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var child in Children.Where(item => !item.IsIgnored))
+            {
+                if (child.IsLonely)
+                    child.Delete();
+                else
+                    child.RenameFilesToFileDateTime(existingBaseNames);
+            }
+        }
+        finally
+        {
+            LoadChildren();
+        }
+    }
+
+    // Delegate-compatible overload used by FileSystemItemBase / ClubDirectory
+    public static bool TryCreate(
+        IDirectoryInfo eventDirectory,
+        IFileSystemItem? parent,
+        out IFileSystemItem directory)
+        => TryCreate(eventDirectory, parent, out directory, null);
+
+    public static bool TryCreate(
+        IDirectoryInfo eventDirectory,
+        IFileSystemItem? parent,
+        out IFileSystemItem directory,
+        ILogger? logger)
+    {
+        directory = null!;
+
+        var name = eventDirectory.Name;
+        var expectedClubChar = parent.GetClubChar();
+        var expectedYear = parent.GetYear();
+
+        var regex = new Regex(Patterns.EventDirectory);
+        var match = regex.Match(name);
+
+        if (!match.Success || match.Groups.Count != 6)
+            return false;
+
+        var actualClubChar = match.Groups[1].Value;
+        var actualYear = match.Groups[2].Value;
+        var actualMonth = match.Groups[3].Value;
+        var actualDay = match.Groups[4].Value;
+        var actualEventName = match.Groups[5].Value;
+
+        var isValid = expectedClubChar == actualClubChar && expectedYear == actualYear;
+
+        directory = new EventDirectory(
+            eventDirectory, parent, isValid,
+            actualClubChar, actualYear, actualMonth, actualDay, actualEventName,
+            logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance);
+        return true;
+    }
+
+    private IEnumerable<DataFiles> GetOrderedChildren(IReadOnlyList<string>? fileOrder)
+    {
+        if (fileOrder == null || fileOrder.Count == 0)
+            return Children;
+
+        var lookup = Children.ToDictionary(c => c.Name);
+        var ordered = new List<DataFiles>();
+
+        foreach (var name in fileOrder)
+        {
+            if (lookup.TryGetValue(name, out var child))
+                ordered.Add(child);
+        }
+
+        // Append any children not in fileOrder at the end
+        foreach (var child in Children)
+        {
+            if (!ordered.Contains(child))
+                ordered.Add(child);
+        }
+
+        return ordered;
+    }
+}

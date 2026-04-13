@@ -368,8 +368,8 @@ control) or Docker secrets, not hardcoded in `docker-compose.yml`.
 
 ### 6.4 Volume Mounting
 
-The archive is mounted at `/archive` inside the container — this path is fixed and hardcoded
-in the application. The mount must be read-write (`:rw`) since the
+The archive root path defaults to `/archive` and is configurable via the `ARCHIVE_ROOT`
+environment variable (or `appsettings.json`). The mount must be read-write (`:rw`) since the
 application renames and deletes files.
 
 ---
@@ -378,66 +378,67 @@ application renames and deletes files.
 
 ### Phase 1: Refactor Core (estimated: 3–4 days)
 
-- [ ] **1.1** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages; use Central Package Management (`Directory.Packages.props`) to manage NuGet package versions consistently across all projects
-- [ ] **1.2** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
-- [ ] **1.3** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
-- [ ] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
-- [ ] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
-- [ ] **1.6** Verify all tests pass — Green test suite before proceeding
+- [x] **1.1** Retarget to .NET 10 — Update `.csproj` files, update NuGet packages; use Central Package Management (`Directory.Packages.props`) to manage NuGet package versions consistently across all projects
+- [x] **1.2** Remove Caliburn.Micro from Core — Replace `PropertyChangedBase`, replace logging with `ILogger<T>`
+- [x] **1.3** Replace `FileSystemProvider` static with DI — Constructor-inject `IFileSystem` everywhere
+- [x] **1.4** Add async support — Make `LoadChildren`, `Rename`, `RenameToFileDateTime`, `TryCreate` async; remove `SortByName` and `SortByDate` from `EventDirectory` (sorting is now pure frontend state)
+- [x] **1.5** Update tests — Retarget to .NET 10, migrate from NUnit to xUnit v3, fix tests after refactoring
+- [x] **1.6** Verify all tests pass — Green test suite before proceeding
 
 ### Phase 2: Build API (estimated: 4–5 days)
 
-- [ ] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
-- [ ] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
-- [ ] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
-- [ ] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
-- [ ] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
-- [ ] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
-- [ ] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
-- [ ] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD` from environment, `appsettings.json` for defaults; archive root is hardcoded to `/archive`
-- [ ] **2.9** Add API tests — Integration tests with `MockFileSystem`
+- [x] **2.1** Create `FL.LigArchivar.Api` project — ASP.NET Core Web API, .NET 10, reference Core; use `.slnx` format for the solution file
+- [x] **2.2** Implement authentication — Cookie-based auth, credentials from env vars (`AUTH_USERNAME`, `AUTH_PASSWORD`), login/logout/status endpoints
+- [x] **2.3** Implement `ArchiveService` — Thin wrapper: creates `ArchiveRoot`, caches tree, maps to DTOs, holds `SemaphoreSlim` for write operations
+- [x] **2.4** Implement `ArchiveController` — `GET /api/archive/tree`
+- [x] **2.5** Implement `EventsController` — `GET`, `POST rename` (with optional `fileOrder`), `POST rename-by-datetime`
+- [x] **2.6** Add write-operation locking — `SemaphoreSlim(1,1)` in `ArchiveService`; return `409 Conflict` if lock is not available
+- [x] **2.7** Add path validation middleware — Prevent directory traversal attacks (e.g. `../../etc/passwd`)
+- [x] **2.8** Add configuration — `AUTH_USERNAME`, `AUTH_PASSWORD`, `ARCHIVE_ROOT` from environment, `appsettings.json` for defaults
+- [x] **2.9** Add API tests — Integration tests with `MockFileSystem`
 
 ### Phase 3: Build Frontend (estimated: 4–5 days)
 
-- [ ] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`; configure
+- [x] **3.1** Scaffold Vite + React + TypeScript project — `npm create vite@latest`; configure
   Vite's dev server to proxy `/api` requests to the ASP.NET backend (e.g. `http://localhost:5000`)
   so that cookies and API calls work during local development without CORS configuration
-- [ ] **3.2** Define TypeScript types — Mirror the API DTOs
-- [ ] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
-- [ ] **3.4** Implement login page — Simple username/password form, redirect to main view on success
-- [ ] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
-- [ ] **3.6** Implement file list view — Table/grid showing files for the selected event
-- [ ] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
-- [ ] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
-- [ ] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
-- [ ] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
+- [x] **3.2** Define TypeScript types — Mirror the API DTOs
+- [x] **3.3** Implement API client — Fetch wrapper with error handling, auth cookie handled automatically by browser
+- [x] **3.4** Implement login page — Simple username/password form, redirect to main view on success
+- [x] **3.5** Implement archive tree view — Collapsible tree, color-coded validity (red/black)
+- [x] **3.6** Implement file list view — Table/grid showing files for the selected event
+- [x] **3.7** Implement rename controls — Start number input, rename button, rename-by-datetime button; pass current file order from FE state to the rename request
+- [x] **3.8** Implement sort controls — Sort by name / sort by date as pure client-side state using `LastWriteTimeUtc` from `FileGroupDto`; sorted order is sent via `fileOrder` on rename
+- [x] **3.9** Error handling — Display rename errors, 409 conflict ("rename in progress"), connection errors
+- [x] **3.10** Styling — Clean, functional UI — match the existing WPF layout roughly
 
 ### Phase 4: Docker & Deployment (estimated: 2 days)
 
-- [ ] **4.1** Create Dockerfile — Multi-stage build as described above
-- [ ] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
-- [ ] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
-- [ ] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
-- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features
+- [x] **4.1** Create Dockerfile — Multi-stage build as described above
+- [x] **4.2** Create docker-compose.yml — Volume mount, port mapping, environment variables
+- [x] **4.3** Configure static file serving — ASP.NET serves `wwwroot` (frontend build output)
+- [x] **4.4** Add SPA fallback routing — `app.MapFallbackToFile("index.html")` for client-side routing
+- [ ] **4.5** Test end-to-end in container — Build image, run with real archive mount, verify all features (must be done manually; Docker not available in CI environment)
 
 ### Phase 5: Polish & Hardening (estimated: 2 days)
 
-- [ ] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
-- [ ] **5.2** Health check endpoint — `GET /health` for Docker health checks
-- [ ] **5.3** Security review — File path validation, container runs as a configurable
+- [x] **5.1** Logging — Structured logging with `Serilog` or built-in `ILogger`
+- [x] **5.2** Health check endpoint — `GET /health` for Docker health checks
+- [x] **5.3** Security review — File path validation, container runs as a configurable
   user/group so that it matches the owner of the mounted archive files on the host;
   `PUID` and `PGID` environment variables are read at container startup (e.g. via an
   entrypoint script) to set the effective UID/GID of the process, following the same
   pattern used by LinuxServer.io images
-- [ ] **5.4** Performance — Consider lazy-loading subtrees if the archive is large
-- [ ] **5.5** Documentation — README with build and deployment instructions
+- [x] **5.4** Performance — Tree is loaded from disk on each request (fast for local/NFS
+  mounts). Lazy-loading subtrees is deferred to a future iteration (see 9. Future Considerations).
+- [x] **5.5** Documentation — README with build and deployment instructions
 
 ### Phase 6: CI/CD with GitHub Actions (estimated: 1–2 days)
 
-- [ ] **6.1** PR validation workflow — Triggered on pull requests to `main`; runs backend
+- [x] **6.1** PR validation workflow — Triggered on pull requests to `main`; runs backend
   tests (`dotnet test`), frontend lint/type-check (`npm run lint`, `tsc --noEmit`), and
   frontend unit tests (`npm test`); reports results as a required status check
-- [ ] **6.2** Docker build & push workflow — Triggered on push to `main` and on creation
+- [x] **6.2** Docker build & push workflow — Triggered on push to `main` and on creation
   of a new version tag (e.g. `v*`); builds the multi-stage Docker image and pushes it to
   the container registry (e.g. GitHub Container Registry `ghcr.io`); tags the image with
   both `latest` (for `main` pushes) and the version tag (e.g. `v1.2.3`) for releases

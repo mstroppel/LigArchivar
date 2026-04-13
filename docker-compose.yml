@@ -1,0 +1,16 @@
+services:
+  ligarchivar:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - /path/to/archive:/archive:rw
+    environment:
+      - AUTH_USERNAME=admin
+      - AUTH_PASSWORD=changeme
+      - ARCHIVE_ROOT=/archive
+      # Set these to the UID/GID of the user that owns the archive files
+      # on the host so the container process can read and rename them.
+      # - PUID=1000
+      # - PGID=1000
+    restart: unless-stopped

@@ -1,0 +1,19 @@
+meta {
+  name: Auth Status
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/auth/status
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+
+  test("response has authenticated field", function() {
+    expect(res.body).to.have.property("authenticated");
+  });
+}

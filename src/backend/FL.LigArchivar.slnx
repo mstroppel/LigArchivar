@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="FL.LigArchivar.Core/FL.LigArchivar.Core.csproj" />
+  <Project Path="FL.LigArchivar.Core.Tests/FL.LigArchivar.Core.Tests.csproj" />
+  <Project Path="FL.LigArchivar.Api/FL.LigArchivar.Api.csproj" />
+  <Folder Name="/Solution Files/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="FL.LigArchivar.Api.Tests/FL.LigArchivar.Api.Tests.csproj" />
+</Solution>

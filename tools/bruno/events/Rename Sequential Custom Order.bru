@@ -1,0 +1,41 @@
+meta {
+  name: Rename (sequential, custom order)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/events/rename
+  body: json
+  auth: none
+}
+
+params:query {
+  path: {{eventPath}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "startNumber": 1,
+    "fileOrder": [
+      "A_2018-05-01_003",
+      "A_2018-05-01_001",
+      "A_2018-05-01_002"
+    ]
+  }
+}
+
+tests {
+  test("returns 200 OK or 422 if names don't match", function() {
+    expect([200, 422]).to.include(res.status);
+  });
+}
+
+docs {
+  fileOrder contains the base names (without extension) of the files in the desired
+  rename sequence. Files not listed are appended at the end in their natural order.
+}

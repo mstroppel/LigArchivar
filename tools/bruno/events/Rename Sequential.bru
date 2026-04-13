@@ -1,0 +1,35 @@
+meta {
+  name: Rename (sequential)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/events/rename?path=Digitalfoto\2026\C-Gemischter_Chor\C_2026-12-26_Stefanstag
+  body: json
+  auth: none
+}
+
+params:query {
+  path: Digitalfoto\2026\C-Gemischter_Chor\C_2026-12-26_Stefanstag
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "startNumber": 5
+  }
+}
+
+tests {
+  test("returns 200 OK", function() {
+    expect(res.status).to.equal(200);
+  });
+  
+  test("response has files array", function() {
+    expect(res.body.files).to.be.an("array");
+  });
+}
