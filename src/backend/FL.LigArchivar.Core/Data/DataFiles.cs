@@ -84,11 +84,22 @@ public class DataFiles
         }
     }
 
-    internal void RenameFilesToFileDateTime()
+    internal void RenameFilesToFileDateTime(HashSet<string> usedBaseNames)
     {
         var fileForDateTime = GetFileForDateTime();
-        var newBaseName = fileForDateTime.LastWriteTimeUtc.ToString(
+        var rawBaseName = fileForDateTime.LastWriteTimeUtc.ToString(
             "yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
+
+        // Resolve collisions: if rawBaseName is already taken (by a previously
+        // renamed group in this batch, or by an existing file on disk), append
+        // a counter suffix until we find a free name.
+        var newBaseName = rawBaseName;
+        var counter = 2;
+        while (!usedBaseNames.Add(newBaseName))
+        {
+            newBaseName = $"{rawBaseName}_{counter}";
+            counter++;
+        }
 
         foreach (var file in _files)
         {

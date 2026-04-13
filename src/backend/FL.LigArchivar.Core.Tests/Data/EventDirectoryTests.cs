@@ -140,6 +140,57 @@ public class EventDirectoryTests
     }
 
     [Fact]
+    public void RenameToFileDateTime_SameTimestamp_AppendsCounter()
+    {
+        // Arrange: two files with identical LastWriteTimeUtc → would collide
+        var sameTime = new DateTime(2018, 05, 01, 10, 0, 0, DateTimeKind.Utc);
+
+        var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            { "/archiv/Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung/A_2018-05-01_001.jpg", new MockFileData("") { LastWriteTime = sameTime } },
+            { "/archiv/Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung/A_2018-05-01_002.jpg", new MockFileData("") { LastWriteTime = sameTime } },
+        }, "/archiv");
+        ArchiveRoot.TryCreate("/archiv", fs, out var root).Should().BeTrue();
+        var uut = root!.GetChild("Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung") as EventDirectory;
+        uut!.LoadChildren();
+
+        // Act — must not throw
+        uut.RenameToFileDateTime();
+
+        // Assert: one gets the raw name, the other gets the _2 suffix
+        var names = uut.Children.Select(c => c.Name).ToArray();
+        names.Should().Contain("2018-05-01_10-00-00");
+        names.Should().Contain("2018-05-01_10-00-00_2");
+    }
+
+    [Fact]
+    public void RenameToFileDateTime_ExistingDatetimeNamedFile_DoesNotCollide()
+    {
+        // Arrange: one file already has the datetime name on disk (prior rename),
+        // a second file has the same timestamp → counter suffix avoids collision.
+        var sameTime = new DateTime(2018, 05, 01, 10, 0, 0, DateTimeKind.Utc);
+
+        var fs = new MockFileSystem(new Dictionary<string, MockFileData>
+        {
+            // Already renamed in a prior run
+            { "/archiv/Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung/2018-05-01_10-00-00.jpg", new MockFileData("") { LastWriteTime = sameTime } },
+            // New file with same timestamp that still has the old archive name
+            { "/archiv/Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung/A_2018-05-01_002.jpg", new MockFileData("") { LastWriteTime = sameTime } },
+        }, "/archiv");
+        ArchiveRoot.TryCreate("/archiv", fs, out var root).Should().BeTrue();
+        var uut = root!.GetChild("Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung") as EventDirectory;
+        uut!.LoadChildren();
+
+        // Act — must not throw
+        uut.RenameToFileDateTime();
+
+        // Assert: the old-format file is now renamed with _2 suffix
+        var names = uut.Children.Select(c => c.Name).ToArray();
+        names.Should().Contain("2018-05-01_10-00-00");
+        names.Should().Contain("2018-05-01_10-00-00_2");
+    }
+
+    [Fact]
     public void TryCreate_ParsesEventDirectoryCorrectly()
     {
         // Arrange

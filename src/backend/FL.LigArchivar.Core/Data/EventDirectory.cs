@@ -101,12 +101,21 @@ public class EventDirectory : IFileSystemItem
     {
         try
         {
+            // Seed the used-names set with base names already on disk (without
+            // extension) so we never collide with files that are not part of
+            // this rename batch (e.g. files added manually, or a partially
+            // completed prior rename).
+            var existingBaseNames = Directory
+                .GetFiles()
+                .Select(f => f.FileSystem.Path.GetFileNameWithoutExtension(f.FullName))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             foreach (var child in Children.Where(item => !item.IsIgnored))
             {
                 if (child.IsLonely)
                     child.Delete();
                 else
-                    child.RenameFilesToFileDateTime();
+                    child.RenameFilesToFileDateTime(existingBaseNames);
             }
         }
         finally
