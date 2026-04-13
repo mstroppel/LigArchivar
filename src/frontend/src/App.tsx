@@ -14,7 +14,11 @@ export function App() {
   });
 
   function handleLoggedOut() {
-    queryClient.clear();
+    // Set auth status to unauthenticated immediately so the login page
+    // renders synchronously, then clear the rest of the cache.
+    queryClient.setQueryData(['auth-status'], { authenticated: false });
+    queryClient.removeQueries({ queryKey: ['archive-tree'] });
+    queryClient.removeQueries({ queryKey: ['event'] });
   }
 
   if (authQuery.isLoading) {
