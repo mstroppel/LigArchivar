@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTree, getEvent, logout, UnauthorizedError } from '../api/archiveApi';
 import type { EventDetailDto } from '../types/archive';
 import { ArchiveTree } from '../components/ArchiveTree';
@@ -13,10 +13,9 @@ interface MainViewProps {
 
 export function MainView({ onLoggedOut }: MainViewProps) {
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
-  const [eventDetail, setEventDetail] = useState<EventDetailDto | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>('name');
-  const [eventError, setEventError] = useState<string | null>(null);
   const fileOrderRef = useRef<string[]>([]);
+  const queryClient = useQueryClient();
 
   // ── Tree query ──────────────────────────────────────────────────────────────
   const treeQuery = useQuery({
@@ -41,28 +40,21 @@ export function MainView({ onLoggedOut }: MainViewProps) {
     },
   });
 
-  // Sync event detail to local state (so rename can update it without refetch)
-  if (eventQuery.data && eventQuery.data !== eventDetail) {
-    setEventDetail(eventQuery.data);
-  }
-  if (eventQuery.error) {
-    const msg =
-      eventQuery.error instanceof Error
-        ? eventQuery.error.message
-        : 'Fehler beim Laden der Veranstaltung.';
-    if (msg !== eventError) setEventError(msg);
-  } else if (eventError && !eventQuery.error) {
-    setEventError(null);
-  }
-
   function handleSelectEvent(path: string) {
     setSelectedPath(path);
-    setEventDetail(null);
     setEventError(null);
   }
 
   function handleRenamed(updated: EventDetailDto) {
-    setEventDetail(updated);
+    // Write the rename result directly into the query cache so the UI
+    // updates immediately without a round-trip, then refresh the tree.
+    queryClient.setQueryData(['event', selectedPath], updated);
+    void treeQuery.refetch();
+  }
+
+  function handleReload() {
+    void treeQuery.refetch();
+    if (selectedPath) void eventQuery.refetch();
   }
 
   const handleOrderChange = useCallback((order: string[]) => {
@@ -77,20 +69,40 @@ export function MainView({ onLoggedOut }: MainViewProps) {
     }
   }
 
+  const [eventError, setEventError] = useState<string | null>(null);
+
+  const eventErrorMsg = eventQuery.error instanceof Error
+    ? eventQuery.error.message
+    : eventQuery.error
+    ? 'Fehler beim Laden der Veranstaltung.'
+    : eventError;
+
   const treeErrorMsg = treeQuery.error instanceof Error
     ? treeQuery.error.message
     : treeQuery.error
     ? 'Fehler beim Laden des Archivs.'
     : null;
 
+  const eventDetail: EventDetailDto | undefined = eventQuery.data;
+
   return (
     <div className={styles.layout}>
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className={styles.header}>
         <span className={styles.brand}>LigArchivar</span>
-        <button className={styles.logoutBtn} onClick={handleLogout}>
-          Abmelden
-        </button>
+        <div className={styles.headerActions}>
+          <button
+            className={styles.reloadBtn}
+            onClick={handleReload}
+            disabled={treeQuery.isFetching || eventQuery.isFetching}
+            title="Archiv neu laden"
+          >
+            {treeQuery.isFetching || eventQuery.isFetching ? 'Laden…' : 'Neu laden'}
+          </button>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            Abmelden
+          </button>
+        </div>
       </header>
 
       {/* ── Body ───────────────────────────────────────────────────────────── */}
@@ -124,8 +136,8 @@ export function MainView({ onLoggedOut }: MainViewProps) {
             <p className={styles.loading}>Veranstaltung wird geladen…</p>
           )}
 
-          {eventError && (
-            <p className={styles.errorText}>{eventError}</p>
+          {eventErrorMsg && (
+            <p className={styles.errorText}>{eventErrorMsg}</p>
           )}
 
           {eventDetail && (
