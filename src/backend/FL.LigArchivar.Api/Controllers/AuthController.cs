@@ -22,8 +22,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        var expectedUsername = _configuration["AUTH_USERNAME"] ?? "admin";
-        var expectedPassword = _configuration["AUTH_PASSWORD"] ?? "changeme";
+        var expectedUsername = _configuration["AUTH_USERNAME"]!;
+        var expectedPassword = _configuration["AUTH_PASSWORD"]!;
 
         if (request.Username != expectedUsername || request.Password != expectedPassword)
             return Unauthorized();

@@ -49,8 +49,8 @@ Runs as a single Docker container; the archive directory is mounted as a volume.
 
 | Variable        | Default    | Description                                             |
 | --------------- | ---------- | ------------------------------------------------------- |
-| `AUTH_USERNAME` | `admin`    | Login username                                          |
-| `AUTH_PASSWORD` | `changeme` | Login password — **always override in production**      |
+| `AUTH_USERNAME` | *required* | Login username                                          |
+| `AUTH_PASSWORD` | *required* | Login password                                          |
 | `ARCHIVE_ROOT`  | `/archive` | Absolute path inside the container to the archive root  |
 | `PUID`          | (unset)    | UID of the user that owns the archive files on the host |
 | `PGID`          | (unset)    | GID of the user that owns the archive files on the host |

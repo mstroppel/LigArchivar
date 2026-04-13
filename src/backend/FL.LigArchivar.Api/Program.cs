@@ -4,6 +4,14 @@ using FL.LigArchivar.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ── Required configuration ────────────────────────────────────────────────────
+
+if (string.IsNullOrWhiteSpace(builder.Configuration["AUTH_USERNAME"]))
+    throw new InvalidOperationException("AUTH_USERNAME is required and must not be empty.");
+
+if (string.IsNullOrWhiteSpace(builder.Configuration["AUTH_PASSWORD"]))
+    throw new InvalidOperationException("AUTH_PASSWORD is required and must not be empty.");
+
 // ── Services ─────────────────────────────────────────────────────────────────
 
 builder.Services.AddControllers();
