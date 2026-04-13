@@ -108,9 +108,27 @@ FL.LigArchivar/
 │   └── frontend/                       # React + TypeScript (Vite)
 ├── Dockerfile                          # Multi-stage build
 ├── docker-compose.yml
-├── entrypoint.sh                       # PUID/PGID user-switching
-└── IMPLEMENTATION_PLAN.md
+└── entrypoint.sh                       # PUID/PGID user-switching
 ```
+
+---
+
+## Tech stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| **Backend language** | C# | 13 |
+| **Backend framework** | ASP.NET Core Web API | .NET 10 |
+| **Frontend library** | React | 19 |
+| **Frontend language** | TypeScript | 6 |
+| **Frontend build tool** | Vite | 8 |
+| **Server state / caching** | TanStack Query (React Query) | 5 |
+| **Backend testing** | xUnit + FluentAssertions | xUnit 2, FA 8 |
+| **Integration testing** | Microsoft.AspNetCore.Mvc.Testing | .NET 10 |
+| **File-system abstraction** | System.IO.Abstractions | 21 |
+| **Containerization** | Docker (multi-stage build) | — |
+| **CI/CD** | GitHub Actions | — |
+| **API testing** | Bruno | — |
 
 ---
 
