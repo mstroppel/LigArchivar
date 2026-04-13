@@ -173,7 +173,7 @@ public class EventsControllerTests : IAsyncLifetime
     [Fact]
     public async Task GetEvent_ValidPath_ReturnsEventDetail()
     {
-        var response = await _client.GetAsync($"/api/events/{EventPath}");
+        var response = await _client.GetAsync($"/api/events?path={Uri.EscapeDataString(EventPath)}");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var dto = await response.Content.ReadFromJsonAsync<EventDetailDto>();
@@ -199,7 +199,7 @@ public class EventsControllerTests : IAsyncLifetime
     [Fact]
     public async Task GetEvent_NonExistentPath_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/events/Digitalfoto/2018/A-Albverein/A_2018-01-01_DoesNotExist");
+        var response = await _client.GetAsync("/api/events?path=Digitalfoto%2F2018%2FA-Albverein%2FA_2018-01-01_DoesNotExist");
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 

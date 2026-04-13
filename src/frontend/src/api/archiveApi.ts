@@ -125,7 +125,7 @@ export async function getTree(path?: string): Promise<TreeNodeDto[]> {
 // ── Events ────────────────────────────────────────────────────────────────────
 
 export async function getEvent(path: string): Promise<EventDetailDto> {
-  return apiFetch<EventDetailDto>(`/api/events/${encodeURIComponent(path)}`);
+  return apiFetch<EventDetailDto>(`/api/events?path=${encodeURIComponent(path)}`);
 }
 
 export async function renameEvent(

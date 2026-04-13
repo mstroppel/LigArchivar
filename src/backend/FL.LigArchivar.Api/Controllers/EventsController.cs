@@ -19,10 +19,10 @@ public class EventsController : ControllerBase
 
     /// <summary>
     /// Returns event details including file list.
-    /// GET /api/events/{**path}
+    /// GET /api/events?path=Digitalfoto/2018/A-Albverein/A_2018-05-01_Maiwanderung
     /// </summary>
-    [HttpGet("{**path}")]
-    public ActionResult<EventDetailDto> GetEvent(string path)
+    [HttpGet]
+    public ActionResult<EventDetailDto> GetEvent([FromQuery] string path)
     {
         if (!ArchiveService.ValidatePath(path))
             return BadRequest("Invalid path.");
