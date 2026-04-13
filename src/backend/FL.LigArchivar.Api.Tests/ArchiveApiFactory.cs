@@ -35,6 +35,8 @@ public class ArchiveApiFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ARCHIVE_ROOT"] = "/archive",
+                ["AUTH_USERNAME"] = "admin",
+                ["AUTH_PASSWORD"] = "changeme",
             });
         });
 
