@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getTree, getEvent, logout, UnauthorizedError } from '../api/archiveApi';
 import type { EventDetailDto } from '../types/archive';
@@ -14,7 +14,7 @@ interface MainViewProps {
 export function MainView({ onLoggedOut }: MainViewProps) {
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>('name');
-  const fileOrderRef = useRef<string[]>([]);
+  const [fileOrder, setFileOrder] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
   // ── Tree query ──────────────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ export function MainView({ onLoggedOut }: MainViewProps) {
   }
 
   const handleOrderChange = useCallback((order: string[]) => {
-    fileOrderRef.current = order;
+    setFileOrder(order);
   }, []);
 
   async function handleLogout() {
@@ -145,7 +145,7 @@ export function MainView({ onLoggedOut }: MainViewProps) {
               <div className={styles.renameSection}>
                 <RenameControls
                   eventPath={eventDetail.path}
-                  fileOrder={fileOrderRef.current}
+                  fileOrder={fileOrder}
                   onRenamed={handleRenamed}
                 />
               </div>
