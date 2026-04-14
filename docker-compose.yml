@@ -13,4 +13,6 @@ services:
       # on the host so the container process can read and rename them.
       # - PUID=1000
       # - PGID=1000
+      # Set to "json" for structured JSON log output (default: plain text).
+      # - LOG_FORMAT=json
     restart: unless-stopped

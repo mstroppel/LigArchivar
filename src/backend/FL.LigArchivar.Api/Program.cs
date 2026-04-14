@@ -4,6 +4,14 @@ using FL.LigArchivar.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ── Logging format ────────────────────────────────────────────────────────────
+
+if (string.Equals(builder.Configuration["LOG_FORMAT"], "json", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Logging.ClearProviders();
+    builder.Logging.AddJsonConsole();
+}
+
 // ── Required configuration ────────────────────────────────────────────────────
 
 if (string.IsNullOrWhiteSpace(builder.Configuration["AUTH_USERNAME"]))
