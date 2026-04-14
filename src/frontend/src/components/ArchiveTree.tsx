@@ -6,21 +6,83 @@ interface ArchiveTreeProps {
   nodes: TreeNodeDto[];
   selectedPath: string | null;
   onSelectEvent: (path: string) => void;
+  onReload?: () => void;
+  isReloading?: boolean;
 }
 
-export function ArchiveTree({ nodes, selectedPath, onSelectEvent }: ArchiveTreeProps) {
+function collectBranchPaths(nodes: TreeNodeDto[]): string[] {
+  const paths: string[] = [];
+  for (const node of nodes) {
+    if (node.children && node.children.length > 0) {
+      paths.push(node.path);
+      paths.push(...collectBranchPaths(node.children));
+    }
+  }
+  return paths;
+}
+
+export function ArchiveTree({ nodes, selectedPath, onSelectEvent, onReload, isReloading }: ArchiveTreeProps) {
+  const [expandedPaths, setExpandedPaths] = useState<ReadonlySet<string>>(new Set());
+
+  function handleToggle(path: string) {
+    setExpandedPaths((prev) => {
+      const next = new Set(prev);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
+      return next;
+    });
+  }
+
+  function handleExpandAll() {
+    setExpandedPaths(new Set(collectBranchPaths(nodes)));
+  }
+
+  function handleCollapseAll() {
+    setExpandedPaths(new Set());
+  }
+
   return (
-    <ul className={styles.tree} role="tree">
-      {nodes.map((node) => (
-        <TreeNode
-          key={node.path}
-          node={node}
-          selectedPath={selectedPath}
-          onSelectEvent={onSelectEvent}
-          depth={0}
-        />
-      ))}
-    </ul>
+    <div>
+      <div className={styles.treeControls}>
+        <button
+          className={styles.treeBtn}
+          onClick={handleExpandAll}
+          title="Alle aufklappen"
+        >
+          ▾ Alle
+        </button>
+        <button
+          className={styles.treeBtn}
+          onClick={handleCollapseAll}
+          title="Alle zuklappen"
+        >
+          ▸ Keine
+        </button>
+        {onReload && (
+          <button
+            className={styles.treeBtn}
+            onClick={onReload}
+            disabled={isReloading}
+            title="Archiv neu laden"
+          >
+            {isReloading ? 'Laden…' : 'Neu laden'}
+          </button>
+        )}
+      </div>
+      <ul className={styles.tree} role="tree">
+        {nodes.map((node) => (
+          <TreeNode
+            key={node.path}
+            node={node}
+            selectedPath={selectedPath}
+            onSelectEvent={onSelectEvent}
+            expandedPaths={expandedPaths}
+            onToggle={handleToggle}
+            depth={0}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -28,14 +90,13 @@ interface TreeNodeProps {
   node: TreeNodeDto;
   selectedPath: string | null;
   onSelectEvent: (path: string) => void;
+  expandedPaths: ReadonlySet<string>;
+  onToggle: (path: string) => void;
   depth: number;
 }
 
-function TreeNode({ node, selectedPath, onSelectEvent, depth }: TreeNodeProps) {
-  // Expand asset/year/club nodes by default; events and invalid/ignored collapsed
-  const isLeafLike = node.nodeType === 'event' || node.nodeType === 'invalid' || node.nodeType === 'ignored';
-  const [expanded, setExpanded] = useState(!isLeafLike && depth <= 1);
-
+function TreeNode({ node, selectedPath, onSelectEvent, expandedPaths, onToggle, depth }: TreeNodeProps) {
+  const expanded = expandedPaths.has(node.path);
   const hasChildren = node.children && node.children.length > 0;
   const isSelected = node.path === selectedPath;
   const isEvent = node.nodeType === 'event';
@@ -44,7 +105,7 @@ function TreeNode({ node, selectedPath, onSelectEvent, depth }: TreeNodeProps) {
     if (isEvent) {
       onSelectEvent(node.path);
     } else if (hasChildren) {
-      setExpanded((prev) => !prev);
+      onToggle(node.path);
     }
   }
 
@@ -106,6 +167,8 @@ function TreeNode({ node, selectedPath, onSelectEvent, depth }: TreeNodeProps) {
               node={child}
               selectedPath={selectedPath}
               onSelectEvent={onSelectEvent}
+              expandedPaths={expandedPaths}
+              onToggle={onToggle}
               depth={depth + 1}
             />
           ))}
