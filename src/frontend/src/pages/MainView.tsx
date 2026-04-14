@@ -91,14 +91,6 @@ export function MainView({ onLoggedOut }: MainViewProps) {
       <header className={styles.header}>
         <span className={styles.brand}>LigArchivar</span>
         <div className={styles.headerActions}>
-          <button
-            className={styles.reloadBtn}
-            onClick={handleReload}
-            disabled={treeQuery.isFetching || eventQuery.isFetching}
-            title="Archiv neu laden"
-          >
-            {treeQuery.isFetching || eventQuery.isFetching ? 'Laden…' : 'Neu laden'}
-          </button>
           <button className={styles.logoutBtn} onClick={handleLogout}>
             Abmelden
           </button>
@@ -120,6 +112,8 @@ export function MainView({ onLoggedOut }: MainViewProps) {
               nodes={treeQuery.data}
               selectedPath={selectedPath}
               onSelectEvent={handleSelectEvent}
+              onReload={handleReload}
+              isReloading={treeQuery.isFetching || eventQuery.isFetching}
             />
           )}
         </aside>

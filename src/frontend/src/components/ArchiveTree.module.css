@@ -1,3 +1,32 @@
+.treeControls {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem 0.25rem 0.375rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0.25rem;
+}
+
+.treeBtn {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.treeBtn:hover:not(:disabled) {
+  background: var(--color-hover);
+}
+
+.treeBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .tree,
 .subtree {
   list-style: none;

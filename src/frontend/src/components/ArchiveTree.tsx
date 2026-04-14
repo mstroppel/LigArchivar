@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { TreeNodeDto } from '../types/archive';
 import styles from './ArchiveTree.module.css';
 
@@ -6,21 +6,56 @@ interface ArchiveTreeProps {
   nodes: TreeNodeDto[];
   selectedPath: string | null;
   onSelectEvent: (path: string) => void;
+  onReload?: () => void;
+  isReloading?: boolean;
 }
 
-export function ArchiveTree({ nodes, selectedPath, onSelectEvent }: ArchiveTreeProps) {
+export function ArchiveTree({ nodes, selectedPath, onSelectEvent, onReload, isReloading }: ArchiveTreeProps) {
+  const [expandSignal, setExpandSignal] = useState(0);
+  const [collapseSignal, setCollapseSignal] = useState(0);
+
   return (
-    <ul className={styles.tree} role="tree">
-      {nodes.map((node) => (
-        <TreeNode
-          key={node.path}
-          node={node}
-          selectedPath={selectedPath}
-          onSelectEvent={onSelectEvent}
-          depth={0}
-        />
-      ))}
-    </ul>
+    <div>
+      <div className={styles.treeControls}>
+        <button
+          className={styles.treeBtn}
+          onClick={() => setExpandSignal((n) => n + 1)}
+          title="Alle aufklappen"
+        >
+          ▾ Alle
+        </button>
+        <button
+          className={styles.treeBtn}
+          onClick={() => setCollapseSignal((n) => n + 1)}
+          title="Alle zuklappen"
+        >
+          ▸ Keine
+        </button>
+        {onReload && (
+          <button
+            className={styles.treeBtn}
+            onClick={onReload}
+            disabled={isReloading}
+            title="Archiv neu laden"
+          >
+            {isReloading ? 'Laden…' : 'Neu laden'}
+          </button>
+        )}
+      </div>
+      <ul className={styles.tree} role="tree">
+        {nodes.map((node) => (
+          <TreeNode
+            key={node.path}
+            node={node}
+            selectedPath={selectedPath}
+            onSelectEvent={onSelectEvent}
+            depth={0}
+            expandSignal={expandSignal}
+            collapseSignal={collapseSignal}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -29,16 +64,24 @@ interface TreeNodeProps {
   selectedPath: string | null;
   onSelectEvent: (path: string) => void;
   depth: number;
+  expandSignal: number;
+  collapseSignal: number;
 }
 
-function TreeNode({ node, selectedPath, onSelectEvent, depth }: TreeNodeProps) {
-  // Expand asset/year/club nodes by default; events and invalid/ignored collapsed
-  const isLeafLike = node.nodeType === 'event' || node.nodeType === 'invalid' || node.nodeType === 'ignored';
-  const [expanded, setExpanded] = useState(!isLeafLike && depth <= 1);
+function TreeNode({ node, selectedPath, onSelectEvent, depth, expandSignal, collapseSignal }: TreeNodeProps) {
+  const [expanded, setExpanded] = useState(false);
 
   const hasChildren = node.children && node.children.length > 0;
   const isSelected = node.path === selectedPath;
   const isEvent = node.nodeType === 'event';
+
+  useEffect(() => {
+    if (expandSignal > 0 && hasChildren) setExpanded(true);
+  }, [expandSignal]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (collapseSignal > 0) setExpanded(false);
+  }, [collapseSignal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleClick() {
     if (isEvent) {
@@ -107,6 +150,8 @@ function TreeNode({ node, selectedPath, onSelectEvent, depth }: TreeNodeProps) {
               selectedPath={selectedPath}
               onSelectEvent={onSelectEvent}
               depth={depth + 1}
+              expandSignal={expandSignal}
+              collapseSignal={collapseSignal}
             />
           ))}
         </ul>
