@@ -17,23 +17,31 @@ Runs as a single Docker container; the archive directory is mounted as a volume.
 
 ## Quick start (Docker Compose)
 
-1. Copy `docker-compose.yml` and create a `.env` file next to it:
-
-  ```envfile
-  AUTH_USERNAME=admin
-  AUTH_PASSWORD=your-secure-password
-  ARCHIVE_ROOT=/archive
-  # Optional: match the UID/GID of the archive owner on the host
-  # PUID=1000
-  # PGID=1000
-  ```
-
-2. Edit `docker-compose.yml` to point the volume at your archive directory:
+1. Create a `docker-compose.yml` file:
 
    ```yaml
-   volumes:
-     - /path/to/your/archive:/archive:rw
+   services:
+     ligarchivar:
+       image: ghcr.io/filmliga66/ligarchivar:latest
+       ports:
+         - "8080:8080"
+       volumes:
+         - /path/to/your/archive:/archive:rw
+       environment:
+         - AUTH_USERNAME=admin
+         - AUTH_PASSWORD=your-secure-password
+         - ARCHIVE_ROOT=/archive
+         # Set these to the UID/GID of the user that owns the archive files
+         # on the host so the container process can read and rename them.
+         # - PUID=1000
+         # - PGID=1000
+         # Set to "json" for structured JSON log output (default: plain text).
+         # - LOG_FORMAT=json
+       restart: unless-stopped
    ```
+
+2. Replace `/path/to/your/archive` with the absolute path to your archive
+   directory on the host, and set `AUTH_PASSWORD` to a strong value.
 
 3. Start the container:
 
